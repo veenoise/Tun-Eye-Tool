@@ -1,0 +1,153 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    height: 523px;
+    width: 438px;
+}
+
+body {
+    font-family: "Istok Web", sans-serif;
+    font-style: normal;
+    color: white;
+    width: 384px;
+    margin: auto;
+    background-color: #039BE6;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    margin-top: 19px;
+    align-items: center;
+}
+
+.branding {
+    text-align: center;
+}
+
+.brand-name {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.brand-desc {
+    font-size: 20px;
+    margin-top: -20px;
+}
+
+#brand-logo {
+    width: 72px;
+    height: 66px;
+}
+
+#settings {
+    width: 55px;
+    height: 55px;
+}
+
+.rectangle {
+    width: 708.89px;
+    height: 474.2px;
+    rotate: 27.39deg;
+    background-color: #2D2D51;
+    position: absolute;
+    top: -200px;
+    left: -50px;
+    z-index: -1;
+}
+
+main {
+    height: 271px;
+    background-color: #403F67;
+    margin-top: 22px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    margin: 14px;
+    width: 100%;
+    font-size: 20px;
+    word-break: break-all;
+    overflow-y: auto;
+    height: calc(271px - 14px * 2);
+}
+
+.btn {
+    width: 100%;
+    border-radius: 100px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.hidden {
+    display: none;
+}
+
+.default {
+    background-color: #2D2D51;
+    height: 85px;
+    margin-top: 22px;
+
+    p {
+        font-size: 32px;
+    }
+}
+
+.start {
+    background-color: #28B6F6;
+    border: #403F67 solid 1px;
+    height: 85px;
+    margin-top: 22px;
+
+    p {
+        font-size: 32px;
+    }
+}
+
+.answer {
+    width: 275px;
+    height: 100%;
+    margin: auto;
+    margin-top: 12px;
+    font-size: 24px;
+}
+
+.verdict {
+    background-color: #2D2D51;
+    height: 53px;
+    position: relative;
+    margin-bottom: 7px;
+
+    .symbol {
+        height: 36px;
+        width: 36px;
+        border-radius: 100px;
+        background-color: #035EE6;
+        position: absolute;
+        left: 40px;
+    }
+}
+
+.breakdown {
+    background-color: #2D2D51;
+    height: 53px;
+    text-decoration: underline;
+    position: relative;
+
+    img {
+        position: absolute;
+        height: 42px;
+        width: 45px;
+        right: 10px;
+    }
+}
