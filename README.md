@@ -53,7 +53,8 @@ Activate this virtual environment
 
 ```bash
 source .venv/bin/activate     # In Linux
-source .venv/Scripts/activate     # In Windows
+
+.venv\Scripts\activate     # In Windows
 ```
 
 Install the required dependencies
