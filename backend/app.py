@@ -35,7 +35,7 @@ def process_image(img_url):
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         # system_instruction="You are a Fake news detection tool. You are a strict JSON API. Do not say anything outside the format.",
-        contents=["Determine if the input is Fake or Real by extracting the texts inside the image and list top 5 words that made you say it is fake or real and decimal weight that made the word lean towards fake or real with negative values being the real and positive being fake", image],
+        contents=["Determine if the input is Fake or Real by extracting the texts inside the image and list top 5 words that made you say it is fake or real and decimal weight that made the word lean towards fake or real with negative values being the fake and positive being real", image],
         config={
             "response_mime_type": "application/json",
             "response_schema": {
@@ -74,7 +74,7 @@ def process_text(text_input):
     response = client.models.generate_content(
         model="gemini-2.5-flash", 
         # system_instruction="You are a Fake news detection tool. You are a strict JSON API. Do not say anything outside the format.",
-        contents=f"Determine if the input is Fake or Real and list top 5 words that made you say it is fake or real and decimal weight that made the word lean towards fake or real with negative values being the real and positive being fake. Here is the client content: {text_input}",
+        contents=f"Determine if the input is Fake or Real and list top 5 words that made you say it is fake or real and decimal weight that made the word lean towards fake or real with negative values being the fake and positive being real. Here is the client content: {text_input}",
         config={
             "response_mime_type": "application/json",
             "response_schema": {

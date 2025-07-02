@@ -264,6 +264,37 @@ input:checked+.slider:before {
     font-size: 32px;
 }
 
+.breakdown-content {
+    background-color: #403F67;
+    margin-top: 22px;
+    border-radius: 25px;
+    height: 271px;
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#goBack {
+    background-color: #2D2D51;
+    height: 53px;
+    position: relative;
+    margin-bottom: 7px;
+    font-size: 24px;
+    width: 275px;
+    margin-left: auto;
+    margin-right: auto;
+
+    img {
+        transform: rotate(180deg);
+        position: absolute;
+        height: 42px;
+        width: 45px;
+        left: 10px;
+    }
+}
+
 @media only screen and (min-width: 439px) {
     .rectangle {
         display: none;

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TUN-EYE</title>
     <link rel="stylesheet" href="popup.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,9 +76,25 @@
             </button>
         </div>
     </section>
-    <section id="breakdown-interface">
-
+    <section id="breakdown-interface" class="hidden">
+        <div class="rectangle"></div>
+        <div class="header">
+            <img src="../images/logo.png" alt="logo" id="brand-logo">
+            <div class="branding">
+                <h1 class="brand-name">TUN-EYE</h1>
+                <h2 class="brand-desc">Fake News Detector</h2>
+            </div>
+            <img src="../images/settings.png" alt="settings" class="settings">
+        </div>
+        <div class="breakdown-content">
+            <canvas id="chartBreakdown"></canvas>
+        </div>
+        <button class="btn" id="goBack">
+            <img src="../images/back.png" alt="back button">
+            <span>Go Back</span>
+        </button>
     </section>
+    <script src="chart.js"></script>
     <script src="popup.js"></script>
 </body>
 

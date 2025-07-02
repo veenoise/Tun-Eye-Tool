@@ -90,6 +90,25 @@ chrome.storage.local.get(null).then(res => {
                 } else if (output['verdict'] === "Real") {
                     circleSym.style.backgroundColor = "#035EE6";
                 }
+
+                // Populate the result to chart js
+                console.log(output.words.map(item => item.word))
+                console.log(output.words.map(item => item.weight))
+                callChartJs(output.words.map(item => item.word), output.words.map(item => item.weight));
+
+                // When user clicks how, it shows the breakdown interface
+                document.querySelector('.breakdown').addEventListener('click', () => {
+                    mainInterface.classList.add('hidden');
+                    settingsInterface.classList.add('hidden');
+                    breakdownInterface.classList.remove('hidden');
+                })
+
+                // When user clicks go back, it returns to the main interface
+                document.querySelector('#goBack').addEventListener('click', () => {
+                    mainInterface.classList.remove('hidden');
+                    settingsInterface.classList.add('hidden');
+                    breakdownInterface.classList.add('hidden');
+                })
             })
             .catch(err => {
                 console.error(`Error encountered:\n------------------------------\n${err}`)
@@ -133,3 +152,78 @@ document.querySelectorAll('.settings').forEach(settings => {
     })
 })
 
+
+function callChartJs(words, values) {
+    // chart
+    const ctx = document.getElementById('chartBreakdown').getContext('2d');
+
+    const data = {
+        labels: words,
+        datasets: [{
+            label: 'Confidence Score',
+            data: values,  // Negative left, Positive right
+            backgroundColor: values.map(val => val < 0 ? '#F7BF2D' : '#035EE6'),  // Red for Fake, Blue for Real
+        }]
+    };
+
+    const options = {
+        indexAxis: 'y', // Horizontal bars
+        scales: {
+            x: {
+                min: -1,  // Force axis to center at 0
+                max: 1,
+                grid: {
+                    color: (context) => context.tick.value === 0 ? 'white' : 'transparent',
+                    lineWidth: (context) => context.tick.value === 0 ? 2 : 0,
+                    drawTicks: true
+
+                },
+                ticks: {
+                    callback: function (value) {
+                        return (value > 0 ? '+' : '') + value;
+                    },
+                    color: "white"
+                }
+            },
+            y: {
+                grid: {
+                    drawBorder: false,
+                },
+                ticks: {
+                    color: 'white'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: ctx => {
+                        return `${ctx.dataset.label}: ${ctx.raw}`;
+                    }
+                }
+            },
+            title: {
+                display: true,
+                text: 'Fake                  Neutral                  Real',
+                font: {
+                    size: 14
+                },
+                padding: {
+                    top: 10,
+                    bottom: 20
+                },
+                color: "white"
+            }
+
+        }
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options,
+    });
+}
