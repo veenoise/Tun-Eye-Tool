@@ -13,36 +13,72 @@
 </head>
 
 <body>
-    <div class="rectangle"></div>
-    <header>
-        <img src="../images/logo.png" alt="logo" id="brand-logo">
-        <div class="branding">
-            <h1 class="brand-name">TUN-EYE</h1>
-            <h2 class="brand-desc">Fake News Detector</h2>
-        </div>
-        <img src="../images/settings.png" alt="settings" id="settings">
-    </header>
-    <main>
-        <div class="content">*asdas</div>
-    </main>
-    <footer>
-        <div class="btn default hidden">
-            <p class="hidden" id="process-text">Scanning Text...<p>
-        </div>
-        <div class="btn start hidden">
-            <p>Click to begin detection</p>
-        </div>
-        <div class="answer">
-            <div class="verdict btn">
-                <div class="symbol"></div>
-                <p>REAL</p>
+    <section id="main-interface" class="">
+        <div class="rectangle"></div>
+        <div class="header">
+            <img src="../images/logo.png" alt="logo" id="brand-logo">
+            <div class="branding">
+                <h1 class="brand-name">TUN-EYE</h1>
+                <h2 class="brand-desc">Fake News Detector</h2>
             </div>
-            <div class="breakdown btn">
-                <p>How?</p>
-                <img src="../images/back.png" alt="back button">
+            <img src="../images/settings.png" alt="settings" class="settings">
+        </div>
+        <div class="main">
+            <div class="content"></div>
+        </div>
+        <div class="footer">
+            <button class="btn default hidden" disabled>
+                Scanning...
+            </button>
+            <button class="btn start" id="submit">
+                Click to begin detection
+            </button>
+            <div class="answer hidden">
+                <button class="verdict btn disabled">
+                    <span class="symbol"></span>
+                    <span id="decision"></span>
+                </button>
+                <button class="breakdown btn">
+                    <span>How?</span>
+                    <img src="../images/back.png" alt="back button">
+                </button>
             </div>
         </div>
-    </footer>
+    </section>
+    <section id="settings-interface" class="hidden">
+        <div class="header">
+            <img src="../images/logo.png" alt="logo" id="brand-logo">
+            <div class="branding">
+                <h1 class="brand-name">TUN-EYE</h1>
+                <h2 class="brand-desc">Settings</h2>
+            </div>
+            <img src="../images/settings.png" alt="settings" class="settings">
+        </div>
+        <div class="settings-content">
+            <div class="settings-option">
+                <p>Enable Extension</p>
+                <label class="switch">
+                    <input type="checkbox" id="enable-extension">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="settings-option">
+                <p>Record User scans <br>for improvements</p>
+                <label class="switch">
+                    <input type="checkbox" id="enable-record">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="footer">
+            <button class="btn done">
+                Done
+            </button>
+        </div>
+    </section>
+    <section id="breakdown-interface">
+
+    </section>
     <script src="popup.js"></script>
 </body>
 
