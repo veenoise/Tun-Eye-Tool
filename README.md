@@ -21,7 +21,7 @@ It's a tool for anyone who wants to stay informed and think critically about the
 
 - [William Eduard Chua](https://github.com/veenoise)
 - [Jason Espallardo](https://github.com/Shifardise)
-- [Whayne Tyrece Tan](https://github.com/veenoise)
+- [Whayne Tyrece Tan](https://github.com/TyreceT)
 - [Nigel Frederick Torres](https://github.com/Gelly-Tr33s)
 - [Jedric Knight Vicente](https://github.com/KnightVicente)
 
