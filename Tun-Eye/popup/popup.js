@@ -5,6 +5,11 @@ const settingsInterface = document.querySelector('#settings-interface');
 const breakdownInterface = document.querySelector('#breakdown-interface');
 const submitBtn = document.querySelector('#submit');
 
+// Resize window
+const newHeight = window.outerHeight - window.innerHeight + 523;
+const newWidth = window.outerWidth;
+window.resizeTo(newWidth, newHeight);
+
 // Load preview to user
 chrome.storage.local.get(null).then(res => {
     switch (res.type) {
