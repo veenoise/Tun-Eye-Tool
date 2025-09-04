@@ -1,0 +1,45 @@
+name: Notify
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Success
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d "{
+            \"username\": \"SonarQube Bot\",
+            \"avatar_url\": \"https://avatars.githubusercontent.com/u/545988?s=280&v=4\",
+            \"content\": \"✅ SonarQube scan completed successfully!\",
+            \"embeds\": [
+              {
+                \"title\": \"View SonarQube Report\",
+                \"url\": \"https://${{ secrets.SONARQUBE_DOMAIN }}/dashboard?id=${{ secrets.SONARQUBE_PROJECT_ID }}\",
+                \"description\": \"All quality gates passed. Code is clean and ready to deploy.\",
+                \"color\": 3066993
+              }
+            ]
+          }" ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Notify Failure
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d "{
+            \"username\": \"SonarQube Bot\",
+            \"avatar_url\": \"https://avatars.githubusercontent.com/u/545988?s=280&v=4\",
+            \"content\": \"❌ SonarQube scan failed!\",
+            \"embeds\": [
+              {
+                \"title\": \"View SonarQube Report\",
+                \"url\": \"https://${{ secrets.SONARQUBE_DOMAIN }}/dashboard?id=${{ secrets.SONARQUBE_PROJECT_ID }}\",
+                \"description\": \"Quality gate failed. Please review issues before proceeding.\",
+                \"color\": 15158332
+              }
+            ]
+          }" ${{ secrets.DISCORD_WEBHOOK }}
