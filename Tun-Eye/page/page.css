@@ -1,0 +1,36 @@
+:root{
+    --lightblue: #039BE6;
+    --yellow: #F7BF2D;  
+    --purple: #403F67;
+    --accentpurple: #2D2D51;
+    --offwhite: #F5F8FF;
+    --white: #FFFFFF;
+    --gray: #737373;
+}
+
+*{
+    list-style: none;
+    margin:0;
+    padding: 0;
+    text-decoration: none;
+    color:black;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+h1{
+    font-size: 48px;
+}
+
+h2{
+    font-size: 32px;
+}
+
+h3{
+    font-size: 24px;
+    font-weight: unset;
+}
+p{
+    font-size: 24px;
+    color: var(--gray);
+}
