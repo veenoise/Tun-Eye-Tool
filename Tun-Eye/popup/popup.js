@@ -232,3 +232,16 @@ function callChartJs(words, values) {
         options: options,
     });
 }
+
+// Open dashboard in new tab
+document.addEventListener("DOMContentLoaded", () => {
+    const dashboardBtn = document.getElementById("dashboardBtn");
+
+    if (dashboardBtn) {
+        dashboardBtn.addEventListener("click", () => {
+            chrome.tabs.create({
+                url: chrome.runtime.getURL("page.html")
+            });
+        });
+    }
+});

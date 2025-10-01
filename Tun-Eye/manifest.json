@@ -20,5 +20,8 @@
     "action": {
         "default_popup": "popup/popup.html"
     },
-    "options_page": "page/page.html"
+    "options_ui": {
+        "page": "page/page.html",
+        "open_in_tab": true
+    }
 }
