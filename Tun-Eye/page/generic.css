@@ -1,0 +1,39 @@
+:root{
+    --lightblue: #039BE6;
+    --yellow: #F7BF2D;  
+    --purple: #403F67;
+    --accentpurple: #2D2D51;
+    --offwhite: #F5F8FF;
+    --white: #FFFFFF;
+    --gray: #737373;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: "JetBrains Mono", monospace;
+    font-style: normal;
+}
+
+h1{
+    font-size: 48px;
+}
+
+h2{
+    font-size: 32px;
+    margin: 5px 0;
+}
+
+h3{
+    font-size: 24px;
+    font-weight: unset;
+}
+p{
+    font-size: 24px;
+    color: var(--gray);
+}

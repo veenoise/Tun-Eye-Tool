@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>TUN-EYE - Dashboard</title>
+    <link rel="stylesheet" href="page.css">
+    <link rel="stylesheet" href="generic.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    
+    <div class="page-container">
+        <nav class="nav-tabs">
+            <img src="../images/icon-128.png" alt="dashboard icon" class="tab-icon">
+            <button class="tab-btn active">
+                Dashboard
+            </button>
+            <button class="tab-btn">Settings</button>
+            <button class="tab-btn">About</button>
+        </nav>
+        <hr class="divider-line">
+        <div class="dashboard-content">
+
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Text Content Section -->
+                <div class="content-box">
+                    <h2 class="section-title">Text Content</h2>
+                    <textarea class="text-input" placeholder="Copy and paste text content here to be detected or upload an image below."></textarea>
+                </div>
+
+                <!-- Image Content Section -->
+                <div class="content-box image-upload">
+                    <h2 class="section-title">Image Content</h2>
+                    <div class="upload-area">
+                        <img src="../images/upload.png">
+                        <p class="upload-text"><i>Upload an image.</i></p>
+                    </div>
+                </div>
+
+                <!-- Start Detection Button -->
+                <button class="btn start-detection">
+                    <b>Start Detection</b>
+                </button>
+            </div>
+
+            <!-- Middle Column - Result -->
+            <div class="middle-column">
+                <div class="result-box">
+                    <h2 class="section-title">Result</h2>
+                    <div class="result-content">
+                        <!-- Results will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Usage Guide -->
+            <div class="right-column">
+                <div class="usage-box">
+                    <h2 class="usage-title">Usage</h2>
+                    <ol class="usage-list">
+                        <li>Paste or insert text on the text box or upload an image.</li>
+                        <li>Click `Start Detection.`</li>
+                        <li>Wait for the analysis to finish.</li>
+                        <li>View the result in the Result panel.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
