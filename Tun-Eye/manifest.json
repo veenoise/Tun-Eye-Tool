@@ -23,5 +23,11 @@
     "options_ui": {
         "page": "page/page.html",
         "open_in_tab": true
-    }
+    },
+    "web_accessible_resources": [{
+        "resources": [
+            "scripts/settings.js"
+        ],
+        "matches": ["<all_urls>"]
+    }]
 }
