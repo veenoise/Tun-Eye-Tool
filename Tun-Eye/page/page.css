@@ -233,3 +233,23 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+
+/* settings.html */
+
+
+/* about.html */
+.about {
+    padding: 20px;
+}
+
+.about a, li{
+    color: var(--lightblue);
+    list-style-type: none;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.about li{
+    margin-left: 50px;
+}
