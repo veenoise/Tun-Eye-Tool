@@ -1,3 +1,6 @@
+/* --------------------------- */
+/* global */
+/* --------------------------- */
 :root {
     --lightblue: #039BE6;
     --yellow: #F7BF2D;
@@ -22,6 +25,11 @@ body {
     background-color: var(--offwhite);
     min-height: 100vh;
 }
+
+/* --------------------------- */
+/* page.html */
+/* --------------------------- */
+
 
 .page-container {
     /* max-width: 1400px; */
@@ -212,10 +220,12 @@ body {
     font-size: 18px;
     line-height: 2;
     padding: 20px;
+    padding-left: 60px;
 }
 
 .usage-list li {
     margin-bottom: 25px;
+    list-style: decimal;
 }
 
 /* Columns */
@@ -234,11 +244,71 @@ body {
     flex-direction: column;
 }
 
-
+/* --------------------------- */
 /* settings.html */
+/* --------------------------- */
+
+.settings-page {
+  padding: 20px;
+}
+
+.setting-item {
+    /* color: white; */
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    gap: 50px;
+    margin-bottom: 20px;
+}
+
+.setting-item p {
+    font-size: 32px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
+    background-color: #555;
+    border-radius: 50px;
+    transition: 0.2s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px; width: 26px;
+    left: 2px; bottom: 2px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+input:checked + .slider {
+    background-color: #00b4ff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
 
 
+/* --------------------------- */
 /* about.html */
+/* --------------------------- */
 .about {
     padding: 20px;
 }
