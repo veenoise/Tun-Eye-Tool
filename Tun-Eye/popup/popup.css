@@ -23,6 +23,7 @@ body {
     margin: 0;
     background-color: var(--lightblue);
     border-radius: 30px;
+    height: auto;
 }
 
 html {
@@ -54,9 +55,11 @@ p{
     border-radius: 15px;
     margin: 10px;
     padding: 5px;
+    display: flex;
+    flex-direction: column;
 }
 
-.header {
+.popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -69,6 +72,10 @@ p{
     gap: 10px;
 }
 
+.brand-logo {
+    user-select: none;
+}
+
 .header-icons {
     display: flex;
     align-items: center;
@@ -76,21 +83,21 @@ p{
 }
 
 .icon-btn {
-  background: none;
-  border: none;
-  padding: 0 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
+    background: none;
+    border: none;
+    padding: 0 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
 .icon-btn img {
-  pointer-events: none; 
+    pointer-events: none; 
 }
 
-.main {
+.popup-main {
     font-family: sans-serif;
-    height: 200px;
+    height: 210px;
     background-color: var(--white);
     margin-top: 22px;
     padding: 5px;
@@ -106,6 +113,7 @@ p{
 .tooltag{
     text-align: center;
     user-select: none;
+    color: var(--gray);
 }
 
 .tool-stage{
@@ -145,7 +153,7 @@ p{
 }
 
 .default {
-    background-color: #2D2D51;
+    background-color: var(--accentpurple);
     height: 85px;
     margin-top: 22px;
     font-size: 32px;
@@ -169,4 +177,144 @@ p{
     letter-spacing: -2px;
     font-style: italic;
     user-select: none;
+}
+
+/* --------------------------- */
+/* Settings Panel */
+/* --------------------------- */
+
+.settings-panel {
+    background: var(--purple);
+    padding: 16px;
+    border-radius: 10px;
+    margin: 10px;
+    transition: all 1s ease-in-out;
+    height: 495px;
+}
+
+.settings-panel.hidden {
+    display: none;
+}
+
+.settings-title {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 40px;
+    color: var(--lightblue);
+    text-align: center;
+}
+
+.setting-item {
+    color: var(--white);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
+    background-color: var(--gray);
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px; width: 16px;
+    left: 2px; bottom: 2px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+input:checked + .slider {
+    background-color: var(--lightblue);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* --------------------------- */
+/* Help  Panel*/
+/* --------------------------- */
+.help-panel {
+    background: var(--purple);
+    padding: 16px;
+    padding-left: 32px;
+    border-radius: 10px;
+    margin: 10px;
+    transition: all 1s ease-in-out;
+    height: 495px;
+    overflow-y: auto;
+}
+
+.help-panel p {
+    font-size: 20px;
+    font-style: italic;
+    margin: 30px 0;
+}
+
+.help-title {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 40px;
+    color: var(--lightblue);
+    text-align: center;
+    user-select: none;
+}
+
+.help-panel.hidden {
+    display: none;
+}
+
+.help-content a:hover {
+    text-decoration: underline;
+}
+
+.usage-list {
+    color: var(--white);
+    font-size: 24px;
+}
+
+.tool-help {
+    margin-left: 20px;
+    list-style-type: decimal;
+}
+
+.tool-help li {
+    margin-bottom: 10px;
+}
+
+.button-help {
+    color: var(--white);
+    list-style-type: none;
+}
+
+.button-help li {
+    margin-bottom: 10px;
+}
+
+.button-help a{
+    color: var(--lightblue);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: default;
 }

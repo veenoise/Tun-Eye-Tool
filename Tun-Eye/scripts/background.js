@@ -45,7 +45,7 @@ chrome.runtime.onInstalled.addListener(function () {
     ];
     for (let i = 0; i < contexts.length; i++) {
         let context = contexts[i];
-        let title = "Tun-Eye " + context + " mode";
+        let title = "ipa-Tun-Eye: " + context + " mode";
         chrome.contextMenus.create({
             title: title,
             contexts: [context],

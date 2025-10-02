@@ -14,31 +14,34 @@
 
 <body>
     <div class="popup-container">
+        
+            <div class="popup-header">
+                <div class="brand-group">
+                    <img src="../images/logo.png" alt="logo" id="brand-logo">
+                    <div class="branding">
+                        <h1 class="brand-name"><b>TUN-EYE</b></h1>
+                    </div>
+                </div>
+                <div class="header-icons">
+                    <button class="icon-btn dashboard" aria-label="Dashboard">
+                        <img src="../images/dashb.png" alt="" />
+                    </button>
+                    <button class="icon-btn settings" aria-label="Settings">
+                        <img src="../images/settings.png" alt="" />
+                    </button>
+                    <button class="icon-btn help" aria-label="Help">
+                        <img src="../images/help.png" alt="" />
+                    </button>
+                </div>
+            </div>
+
         <section id="main-interface" class="">
             <!-- <div class="rectangle"></div> -->
-            <div class="header">
-                    <div class="brand-group">
-                        <img src="../images/logo.png" alt="logo" id="brand-logo">
-                        <div class="branding">
-                            <h1 class="brand-name"><b>TUN-EYE</b></h1>
-                        </div>
-                    </div>
-                    <div class="header-icons">
-                        <button class="icon-btn dashboard" aria-label="Dashboard">
-                            <img src="../images/dashb.png" alt="" />
-                        </button>
-                        <button class="icon-btn settings" aria-label="Settings">
-                            <img src="../images/settings.png" alt="" />
-                        </button>
-                        <button class="icon-btn help" aria-label="Help">
-                            <img src="../images/help.png" alt="" />
-                        </button>
-                    </div>
-            </div>
-            
-                <h3 class="tooltag"><i>Select > Preview > Detect</i></h3>    
-                <h3 class="tool-stage">Select</h3>
-            <div class="main">
+
+            <h3 class="tooltag"><i>Select > Preview > Detect</i></h3>    
+            <h3 class="tool-stage">Select</h3>
+
+            <div class="popup-main">
                 <p><i>Your selected content will appear here. <br><br>Right click on highlighted text or hovered image to load it here.</i></p>
             </div>
 
@@ -50,52 +53,10 @@
                     <b>Start Detection</b>
                 </button>
                 <p class="bottom-tip">Tip: Select text or image first.</p>
-
-                <!-- THIS IS WHERE I LEFT OFF. EVERYTHING AFTER IS TODO-->
-
-                <!-- <div class="answer hidden">
-                    <button class="verdict btn disabled">
-                        <span class="symbol"></span>
-                        <span id="decision"></span>
-                    </button>
-                    <button class="breakdown btn">
-                        <span>How?</span>
-                        <img src="../images/back.png" alt="back button">
-                    </button>
-                </div> -->
             </div>
         </section>
-        <section id="settings-interface" class="hidden">
-            <div class="header">
-                <img src="../images/logo.png" alt="logo" id="brand-logo">
-                <div class="branding">
-                    <h1 class="brand-name">TUN-EYE</h1>
-                </div>
-                <img src="../images/settings.png" alt="settings" class="settings">
-            </div>
-            <div class="settings-content">
-                <div class="settings-option">
-                    <p>Enable Extension</p>
-                    <label class="switch">
-                        <input type="checkbox" id="enable-extension">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="settings-option">
-                    <p>Record User scans <br>for improvements</p>
-                    <label class="switch">
-                        <input type="checkbox" id="enable-record">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="footer">
-                <button class="btn done">
-                    Done
-                </button>
-            </div>
-        </section>
-        <section id="breakdown-interface" class="hidden">
+
+        <!-- <section id="breakdown-interface" class="hidden">
             <div class="rectangle"></div>
             <div class="header">
                 <img src="../images/logo.png" alt="logo" id="brand-logo">
@@ -112,10 +73,55 @@
                 <img src="../images/back.png" alt="back button">
                 <span>Go Back</span>
             </button>
-        </section>
-        <script src="chart.js"></script>
-        <script src="popup.js"></script>
+        </section> -->
     </div>
+    
+        <!-- Settings panel (hidden by default) -->
+    <section id="settings-panel" class="settings-panel hidden">
+      <h2 class="settings-title">⚙ Settings</h2>
+
+        <div class="setting-item">
+            <label for="enable-extension">Enable Extension</label>
+            <label class="switch">
+                <input type="checkbox" id="enable-extension">
+                <span class="slider"></span>
+            </label>
+            </div>
+
+            <div class="setting-item">
+            <label for="enable-record">Record User scans for improvements</label>
+            <label class="switch">
+                <input type="checkbox" id="enable-record">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Instructions panel (hidden by default) -->
+    <section id="help-panel" class="help-panel hidden">
+        <h2 class="help-title">? Instructions</h2>
+        <div class="usage-list">
+            <ol class="tool-help">
+                <li>Highlight text or hover over your mouse over  an image.</li>
+                <li>Right-click to open your browser's context menu.</li>
+                <li>Select "ipa-TUN-EYE" from the context menu.</li>
+                <li>In the panel, check the preview to make sure the right text or image is selected.</li>
+                <li>Click `Start Detection` and wait for the analysis to finish.</li>
+                <li>View the detection results.</li>
+            </ol>
+            <br>
+            <ol class="button-help">
+                <li>Click the <a>help (?) icon</a> to hide or view these instructions again.</li>
+                <li>Click the <a>settings (⚙) icon</a> to adjust your preferences.</li>
+                <li>Click the <a>dashboard (≡) icon</a> to view the full-page interface</li>
+            </ol>
+            <p>Tip: Pin the Tun-Eye extension in your toolbar</p>
+        </div>
+    </section>
+
+    <script src="chart.js"></script>
+    <script src="popup.js"></script>
+    <script src="../scripts/settings.js"></script>
 </body>
 
 </html>
