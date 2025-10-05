@@ -286,24 +286,76 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  // Detection button 
+  // Detection button
   const submitBtn = $("#submit");
   if (submitBtn) {
-    submitBtn.addEventListener("click", () => {
+    submitBtn.addEventListener("click", async () => {
       log("Submit clicked. Current stage:", currentStage);
 
       if (currentStage === "preview") {
+        // Start detection
         setStage("analyzing");
 
-        setTimeout(() => {
+        try {
+          // Get all storage data for API call
+          const storageData = await new Promise((resolve) => {
+            storage.local.get(null, resolve);
+          });
+
+          log("Sending to API:", storageData);
+
+          // Call Flask API
+          const response = await fetch("http://127.0.0.1:1234/api/process", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Log": storageData.enableRecord || false,
+            },
+            body: JSON.stringify(storageData),
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const output = await response.json();
+          log("API response:", output);
+
+          // Transition to result stage
           setStage("result");
-          renderChart(["Word1", "Word2", "Word3"], [10, 20, -15]);
-        }, 2000);
+
+          // Display verdict and chart (we'll implement this in next checkpoint)
+          // For now, just log it
+          log("Verdict:", output.verdict);
+          log("Words:", output.words);
+
+        } catch (err) {
+          log("Error during detection:", err);
+          console.error("Error encountered:\n------------------------------\n", err);
+          
+          // Return to preview stage on error
+          setStage("preview");
+          
+          // Show error to user
+          const mainContent = $(".popup-main");
+          if (mainContent) {
+            mainContent.innerHTML = `<p style="color: red; padding: 10px;">Error: Could not connect to detection service. Make sure the backend is running.</p>`;
+          }
+        }
+
       } else if (currentStage === "result") {
+        // Return to select stage
+        log("Returning to select stage");
         setStage("select");
+        
+        // Clear the content
+        const mainContent = $(".popup-main");
+        if (mainContent) {
+          mainContent.innerHTML = `<p><i>Your selected content will appear here.<br><br>Right click on highlighted text or hovered image to load it here.</i></p>`;
+        }
       }
     });
   }
-});
 
+});
 
