@@ -27,22 +27,29 @@
             <div class="setting-item">
                 <p>Enable Extension</p>
                 <label class="switch">
-                <input type="checkbox" id="enable-extension">
-                <span class="slider round"></span>
+                    <input type="checkbox" id="enable-extension">
+                    <span class="slider round"></span>
                 </label>
             </div>
             
             <div class="setting-item">
-                <p>Record User Scans for Improvements</p>
-                <label class="switch">
+            <label for="enable-record">Record User scans for improvements</label>
+            <label class="switch">
                 <input type="checkbox" id="enable-record">
-                <span class="slider round"></span>
-                </label>
+                <span class="slider"></span>
+            </label>
             </div>
-        </div>
 
-        // todo: add more settings
-        // - Awlays open help panel
+            <div class="setting-item">
+            <label for="enable-instructionOnStartup">Show instructions at startup</label>
+            <label class="switch">
+                <input type="checkbox" id="enable-instructionOnStartup">
+                <span class="slider"></span>
+            </label>
+            </div>
+
+        </div>
+    </div>
 
     <script src="nav.js"></script>
     <script src="../scripts/settings.js"></script>
