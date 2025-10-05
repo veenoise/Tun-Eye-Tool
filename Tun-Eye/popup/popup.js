@@ -442,9 +442,16 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (currentStage === "result") {
         // Return to select stage
         log("Returning to select stage");
+        
+        // Clear stored content
+        storage.local.remove(["type", "value"], () => {
+          log("Cleared content from storage");
+        });
+        
+        // Reset to select stage
         setStage("select");
         
-        // Clear the content
+        // Clear the content display
         const mainContent = $(".popup-main");
         if (mainContent) {
           mainContent.innerHTML = `<p><i>Your selected content will appear here.<br><br>Right click on highlighted text or hovered image to load it here.</i></p>`;
