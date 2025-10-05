@@ -97,15 +97,15 @@ p{
 
 .popup-main {
     font-family: sans-serif;
-    height: 210px;
+    height: 235px;
     background-color: var(--white);
-    margin-top: 22px;
+    margin-top: 0px;
     padding: 5px;
     border: var(--accentpurple) solid 5px;
     border-radius: 15px;
     display: flex;
     justify-content: center;
-    max-height: 300px;
+    max-height: 500px;
     overflow-y: auto;
     user-select: none;
 }

@@ -116,34 +116,128 @@ function setStage(stage) {
 // ------------------------------
 // Chart Rendering
 // ------------------------------
-function renderChart(labels, values) {
-  log("renderChart ->", { labels, values });
+function callChartJs(words, values, verdict) {
+  log("Rendering chart with:", { words, values, verdict });
 
-  const ctx = document.getElementById("barChart");
-  if (!ctx) {
-    log("❌ No canvas found for chart.");
-    return;
-  }
+  const mainContent = $(".popup-main");
+  if (!mainContent) return;
 
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Confidence Score",
-          data: values,
-          backgroundColor: values.map((v) => (v < 0 ? "#F7BF2D" : "#035EE6")),
-        },
-      ],
-    },
-    options: {
-      indexAxis: "y",
-      plugins: {
-        legend: { display: false },
+  // Determine verdict color
+  const verdictColor = verdict === "Fake News" ? "#F7BF2D" : "#035EE6";
+  const verdictText = verdict === "Fake News" ? "⚠ Fake News" : "✓ Real News";
+
+  // Clear and rebuild content
+  mainContent.innerHTML = `
+    <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0;">
+        <h2 style="color: ${verdictColor}; margin: 0; font-size: 32px;">${verdictText}</h2>
+      </div>
+      <div style="flex: 1; width: 100%; min-height: 0;">
+        <canvas id="chartBreakdown"></canvas>
+      </div>
+    </div>
+  `;
+
+  // Wait for DOM update, then render chart
+  setTimeout(() => {
+    const ctx = document.getElementById("chartBreakdown");
+    if (!ctx) {
+      log("Canvas not found");
+      return;
+    }
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: words,
+        datasets: [
+          {
+            label: "Confidence Score",
+            data: values,
+            backgroundColor: values.map((val) => (val < 0 ? "#F7BF2D" : "#035EE6")),
+          },
+        ],
       },
-    },
-  });
+      options: {
+        maintainAspectRatio: false,
+        indexAxis: "y",
+        scales: {
+          x: {
+            min: -1,
+            max: 1,
+            grid: {
+              color: (context) => (context.tick.value === 0 ? "#2D2D51" : "transparent"),
+              lineWidth: (context) => (context.tick.value === 0 ? 2 : 0),
+            },
+            ticks: {
+              callback: function (value) {
+                return (value > 0 ? "+" : "") + value;
+              },
+              color: "#2D2D51",
+              font: {
+                size: 11,
+              },
+            },
+          },
+          y: {
+            grid: {
+              drawBorder: false,
+            },
+            ticks: {
+              color: "#2D2D51",
+              font: {
+                size: 11,
+              },
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                return `${ctx.dataset.label}: ${ctx.raw}`;
+              },
+            },
+          },
+          title: {
+            display: true,
+            text: "Fake                           Neutral                           Real",
+            font: {
+              size: 12,
+            },
+            padding: {
+              top: 5,
+              bottom: 5,
+            },
+            color: "#2D2D51",
+          },
+        },
+      },
+    });
+  }, 100);
+}
+
+// TEMPORARY TEST - Call testChart() in console to test
+function testChart() {
+  const mockOutput = {
+    verdict: "Fake News",
+    words: [
+      { word: "hoax", weight: -0.8 },
+      { word: "fake", weight: -0.6 },
+      { word: "truth", weight: 0.7 },
+      { word: "verified", weight: 0.9 },
+    ],
+  };
+  
+  setStage("result");
+  callChartJs(
+    mockOutput.words.map((item) => item.word),
+    mockOutput.words.map((item) => item.weight),
+    mockOutput.verdict
+  );
 }
 
 // ------------------------------
@@ -324,10 +418,12 @@ document.addEventListener("DOMContentLoaded", () => {
           // Transition to result stage
           setStage("result");
 
-          // Display verdict and chart (we'll implement this in next checkpoint)
-          // For now, just log it
-          log("Verdict:", output.verdict);
-          log("Words:", output.words);
+          // Display verdict and chart
+          callChartJs(
+            output.words.map((item) => item.word),
+            output.words.map((item) => item.weight),
+            output.verdict
+          );
 
         } catch (err) {
           log("Error during detection:", err);
