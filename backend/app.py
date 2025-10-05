@@ -35,6 +35,7 @@ explainer = LimeTextExplainer(class_names=class_names)
 # Flask endpoint for frontend
 @app.route("/api/process", methods=["POST"])
 def data_processing():
+    print(request.headers)
     data = request.get_json()
 
     match data['type']:
@@ -42,8 +43,8 @@ def data_processing():
             output = process_text(data['value'])
         case 'image':
             output = process_image(data['value'])
-    
-    return jsonify(json.loads(output))
+
+    return jsonify(output)
 
 # Data processing if image
 def process_image(img_url):
@@ -60,7 +61,7 @@ def process_image(img_url):
     joined_text = " ".join(texts)
     
     # Call the distilmbert function to return the results
-    process_text(joined_text)
+    return process_text(joined_text)
     
 # Data processing if text
 def process_text(text_input):
@@ -72,18 +73,21 @@ def process_text(text_input):
     )
     
     results = {
-        "verdict":{},
-        "features":{}
+        "verdict": "",
+        "words": []
     }
     
     # prediction probabilities
     probs = predict_proba([text_input])[0]
-    for label, prob in zip(class_names, probs):
-        results.verdict[label] = f"{prob:.4f}"
+    
+    # find the label with the highest probability
+    max_index = probs.argmax()
+    predicted_label = class_names[max_index]
+    results["verdict"] = predicted_label
 
     # features and their weights
     for feature, weight in exp.as_list():
-        results.features[feature] =  f"{weight:.4f}"
+        results["words"].append({"word": feature, "weight": f"{weight:.4f}"})
         
     return results
 

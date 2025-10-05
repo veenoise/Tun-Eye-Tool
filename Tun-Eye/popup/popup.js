@@ -62,7 +62,7 @@ chrome.storage.local.get(null).then(res => {
     })
 
     // Submit data on click
-    submitBtn.addEventListener('click', (e) => {
+    submitBtn.addEventListener('click', async (e) => {
         const scanStep = document.querySelector('.default');
         const answerBtn = document.querySelector('.answer');
         const circleSym = document.querySelector('.symbol');
@@ -71,11 +71,14 @@ chrome.storage.local.get(null).then(res => {
         scanStep.classList.remove("hidden");
         answerBtn.classList.add('hidden');
 
+        const res = await chrome.storage.local.get(null);
+        
         // Call flask API
         fetch("http://127.0.0.1:1234/api/process", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-Log": res.enableRecord
             },
             body: JSON.stringify(res)
         })
@@ -90,9 +93,9 @@ chrome.storage.local.get(null).then(res => {
                 answerBtn.childNodes[1].childNodes[2].textContent = output['verdict'];
 
                 // Change symbol color
-                if (output['verdict'] === "Fake") {
+                if (output['verdict'] === "Fake News") {
                     circleSym.style.backgroundColor = "#F7BF2D";
-                } else if (output['verdict'] === "Real") {
+                } else if (output['verdict'] === "Real News") {
                     circleSym.style.backgroundColor = "#035EE6";
                 }
 
