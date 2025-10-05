@@ -49,26 +49,20 @@ function updateUIForStage(stage) {
   const actionBtn = $("#submit");
   const tip = $(".bottom-tip");
 
-  log("DOM check:", {
-    stageLabel,
-    mainPanel,
-    actionBtn,
-    tip,
-  });
-
   if (!stageLabel || !mainPanel || !actionBtn || !tip) {
-    log("❌ Missing DOM elements. Skipping stage update.");
+    log("⚠ Missing DOM elements. Skipping stage update.");
     return;
   }
+
+  // Remove all stage classes
+  actionBtn.classList.remove("stage-select", "stage-preview", "stage-analyzing", "stage-result", "extension-disabled");
 
   switch (stage) {
     case "select":
       stageLabel.textContent = "Select";
-      mainPanel.innerHTML = `<p><i>Your selected content will appear here.<br><br>
-        Right click on highlighted text or hovered image to load it here.</i></p>`;
       actionBtn.textContent = "Start Detection";
       actionBtn.disabled = true;
-      actionBtn.classList.add("disabled");
+      actionBtn.classList.add("stage-select");
       tip.textContent = "Tip: Select text or image first.";
       break;
 
@@ -76,30 +70,24 @@ function updateUIForStage(stage) {
       stageLabel.textContent = "Preview";
       actionBtn.textContent = "Start Detection";
       actionBtn.disabled = false;
-      actionBtn.classList.remove("disabled");
+      actionBtn.classList.add("stage-preview");
       tip.textContent = "Click to check if it is real or fake.";
       break;
 
     case "analyzing":
       stageLabel.textContent = "Analyzing";
-      mainPanel.innerHTML = `
-        <p style="color: lightblue;"><i>Scanning Text...</i></p>
-        <p style="color: lightblue;"><i>Scanning Captions...</i></p>
-        <p style="color: lightblue;"><i>Verifying Information...</i></p>
-      `;
-      actionBtn.textContent = "Analyzing";
+      actionBtn.textContent = "Analyzing...";
       actionBtn.disabled = true;
-      actionBtn.classList.add("disabled");
-      tip.textContent = "Please wait.";
+      actionBtn.classList.add("stage-analyzing");
+      tip.textContent = "Please wait...";
       break;
 
     case "result":
       stageLabel.textContent = "Result";
-      mainPanel.innerHTML = `<canvas id="barChart"></canvas>`;
       actionBtn.textContent = "Return";
       actionBtn.disabled = false;
-      actionBtn.classList.remove("disabled");
-      tip.innerHTML = `Go to <span class="dash-icon">📊</span> Dashboard for more details.`;
+      actionBtn.classList.add("stage-result");
+      tip.innerHTML = `Go to <span style="color: var(--lightblue); font-weight: bold;">📊 Dashboard</span> for more details.`;
       break;
 
     default:
@@ -289,7 +277,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (res.enableExtension === false && submitBtn) {
       log("Extension disabled - disabling submit button");
       submitBtn.disabled = true;
-      submitBtn.classList.add("submit-disabled", "disabled");
+      submitBtn.classList.remove("stage-select", "stage-preview", "stage-analyzing", "stage-result");
+      submitBtn.classList.add("extension-disabled");
+      submitBtn.textContent = "Extension Disabled";
     }
 
   });
@@ -307,11 +297,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (submitBtn) {
         if (newValue === true) {
           submitBtn.disabled = false;
-          submitBtn.classList.remove("submit-disabled", "disabled");
+          submitBtn.classList.remove("extension-disabled");
           log("Submit button enabled");
+          // Restore proper stage styling
+          updateUIForStage(currentStage);
         } else {
           submitBtn.disabled = true;
-          submitBtn.classList.add("submit-disabled", "disabled");
+          submitBtn.classList.remove("stage-select", "stage-preview", "stage-analyzing", "stage-result");
+          submitBtn.classList.add("extension-disabled");
+          submitBtn.textContent = "Extension Disabled";
           log("Submit button disabled");
         }
       }

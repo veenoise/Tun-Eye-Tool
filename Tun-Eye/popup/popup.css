@@ -318,3 +318,46 @@ input:checked + .slider:before {
     font-weight: bold;
     cursor: default;
 }
+
+/* Stage responsive buttons*/
+.btn.stage-select {
+    color: var(--gray);
+    background-color: var(--purple);
+    cursor: not-allowed;
+}
+
+.btn.stage-preview {
+    color: var(--white);
+    background-color: var(--lightblue);
+    cursor: pointer;
+}
+
+.btn.stage-preview:hover {
+    background-color: #028acc; 
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.btn.stage-analyzing {
+    color: var(--lightblue);
+    background-color: var(--purple);
+    cursor: not-allowed;
+}
+
+.btn.stage-result {
+    color: var(--white);
+    background-color: var(--purple);
+    cursor: pointer;
+}
+
+.btn.stage-result:hover {
+    background-color: #332e59; 
+    transition: all 0.2s ease;
+}
+
+.btn.extension-disabled {
+    color: var(--white);
+    background-color: var(--purple);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
