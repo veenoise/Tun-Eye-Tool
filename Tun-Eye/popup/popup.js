@@ -153,10 +153,22 @@ document.addEventListener("DOMContentLoaded", () => {
   log("DOMContentLoaded fired.");
 
   // Load Content from Storage
-  storage.local.get(null, (res) => {
-    log("Storage loaded:", res);
+    storage.local.get(null, (res) => {
+      log("Storage loaded:", res);
 
-    const mainContent = $(".popup-main");
+      const mainContent = $(".popup-main");
+      const submitBtn = $("#submit");
+
+      // Set default values if not present
+      if (!("enableExtension" in res)) {
+        storage.local.set({ enableExtension: true });
+        res.enableExtension = true;
+      }
+
+      if (!("enableRecord" in res)) {
+        storage.local.set({ enableRecord: false });
+        res.enableRecord = false;
+      }
 
     // Display content if it exists
     if (res.type && res.value) {
@@ -177,6 +189,38 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       log("No content in storage");
       setStage("select");
+    }
+
+    // Apply enableExtension state to button
+    if (res.enableExtension === false && submitBtn) {
+      log("Extension disabled - disabling submit button");
+      submitBtn.disabled = true;
+      submitBtn.classList.add("submit-disabled", "disabled");
+    }
+
+  });
+
+  //Storage change listener
+  storage.onChanged.addListener((changes, namespace) => {
+    log("Storage changed:", changes, namespace);
+
+    if (namespace === "local" && changes.enableExtension) {
+      const submitBtn = $("#submit");
+      const newValue = changes.enableExtension.newValue;
+
+      log("enableExtension changed to:", newValue);
+
+      if (submitBtn) {
+        if (newValue === true) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("submit-disabled", "disabled");
+          log("Submit button enabled");
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.classList.add("submit-disabled", "disabled");
+          log("Submit button disabled");
+        }
+      }
     }
   });
 
