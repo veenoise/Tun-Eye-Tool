@@ -26,11 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (helpPanel && mainInterface && settingsPanel) {
-      mainInterface?.classList.add("hidden");
-      settingsPanel?.classList.add("hidden");
-      helpPanel?.classList.remove("hidden");
-    }
-  });
+      if (data.enableInstructionsOnStartup) {
+        // Show help panel on startup
+        helpPanel.classList.remove("hidden");
+        mainInterface.classList.add("hidden");
+        settingsPanel.classList.add("hidden");
+      } else {
+        // Show main interface on startup (default)
+        helpPanel?.classList.add("hidden");
+        settingsPanel?.classList.add("hidden");
+        mainInterface?.classList.remove("hidden");
+      }
+    };
 
   // Save "Enable Extension"
   if (enableExtension) {
@@ -52,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Save "Show instructions on startup"
   if (enableInstructionsOnStartup) {
     enableInstructionsOnStartup.addEventListener("change", (e) => {
       const checked = e.target.checked;
@@ -60,6 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-
+})
 });
 
