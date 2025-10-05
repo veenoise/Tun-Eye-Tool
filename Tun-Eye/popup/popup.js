@@ -1,4 +1,9 @@
 // ------------------------------
+// Cross-browser compatibility
+// ------------------------------
+const storage = chrome.storage || browser.storage;
+
+// ------------------------------
 // Utility
 // ------------------------------
 const $ = (sel) => document.querySelector(sel);

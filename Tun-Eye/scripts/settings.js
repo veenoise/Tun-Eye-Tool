@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const enableExtension = document.getElementById("enable-extension");
   const enableRecord = document.getElementById("enable-record");
 
-  // Load saved settings from chrome.storage
-  chrome.storage.sync.get(["enableExtension", "enableRecord"], (data) => {
+  // Load saved settings from chrome.storage.local (changed from .sync)
+  storage.local.get(["enableExtension", "enableRecord"], (data) => {
     console.log("Loaded settings:", data);
 
     if (enableExtension) {
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (enableExtension) {
     enableExtension.addEventListener("change", (e) => {
       const checked = e.target.checked;
-      chrome.storage.sync.set({ enableExtension: checked }, () => {
+      storage.local.set({ enableExtension: checked }, () => {
         console.log("Enable Extension saved:", checked);
       });
     });
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (enableRecord) {
     enableRecord.addEventListener("change", (e) => {
       const checked = e.target.checked;
-      chrome.storage.sync.set({ enableRecord: checked }, () => {
+      storage.local.set({ enableRecord: checked }, () => {
         console.log("Record User scans saved:", checked);
       });
     });
