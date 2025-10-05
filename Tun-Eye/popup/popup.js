@@ -335,20 +335,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (settingsBtn && settingsPanel && mainInterface) {
     settingsBtn.addEventListener("click", () => {
-      const isHidden = settingsPanel.classList.contains("hidden");
+      const isSettingsHidden = settingsPanel.classList.contains("hidden");
 
-      if (isHidden) {
+      if (isSettingsHidden) {
         log("Opening settings panel");
-        settingsPanel.classList.remove("hidden");
+        // Hide all other panels
         mainInterface.classList.add("hidden");
-
-        if (helpPanel && !helpPanel.classList.contains("hidden")) {
-          log("Hiding help panel");
-          helpPanel.classList.add("hidden");
-        }
-      } 
-      else {
+        helpPanel.classList.add("hidden");
+        // Show settings
+        settingsPanel.classList.remove("hidden");
+      } else {
         log("Closing settings panel");
+        // Close settings, show main
         settingsPanel.classList.add("hidden");
         mainInterface.classList.remove("hidden");
       }
@@ -359,20 +357,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const helpBtn = $(".icon-btn.help");
   if (helpBtn && helpPanel && mainInterface) {
     helpBtn.addEventListener("click", () => {
-      const isHidden = helpPanel.classList.contains("hidden");
+      const isHelpHidden = helpPanel.classList.contains("hidden");
 
-      if (isHidden) {
+      if (isHelpHidden) {
         log("Opening help panel");
-        helpPanel.classList.remove("hidden");
+        // Hide all other panels
         mainInterface.classList.add("hidden");
-
-        if (settingsPanel && !settingsPanel.classList.contains("hidden")) {
-          log("Hiding settings panel");
-          settingsPanel.classList.add("hidden");
-        }
-      } 
-      else {
+        settingsPanel.classList.add("hidden");
+        // Show help
+        helpPanel.classList.remove("hidden");
+      } else {
         log("Closing help panel");
+        // Close help, show main
         helpPanel.classList.add("hidden");
         mainInterface.classList.remove("hidden");
       }
