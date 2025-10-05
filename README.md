@@ -15,8 +15,6 @@ Tun-Eye is designed for:
 
 It's a tool for anyone who wants to stay informed and think critically about the content they encounter online.
 
-
-
 ## Authors
 
 - [William Eduard Chua](https://github.com/veenoise)
@@ -26,13 +24,6 @@ It's a tool for anyone who wants to stay informed and think critically about the
 - [Jedric Knight Vicente](https://github.com/KnightVicente)
 
 
-## Environment Variables
-
-To run this project, you will need to add the following environment variables to your .env file
-
-`GEMINI_API_KEY`
-
-There is a sample file located at `backend/.env.sample`, make a copy of that and rename it to `.env`. Then modify the gemini key with your own.
 ## Installation
 
 1. Install the web extension by opening the browser settings
@@ -61,6 +52,13 @@ Install the required dependencies
 
 ```bash
 pip install -r requirement.txt
+```
+
+Build the model
+
+```bash
+cat model_part_* > model.zip
+unzip model.zip
 ```
 
 To deploy run the backend API, make sure that you are in the `Tun-Eye-Tool/backend` directory and run 

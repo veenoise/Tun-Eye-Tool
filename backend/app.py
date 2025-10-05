@@ -1,17 +1,38 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from dotenv import load_dotenv
-from google import genai
-from google.genai import types
 import requests
+import easyocr
+import numpy as np
+import cv2
 import json
+from transformers import (
+    AutoTokenizer,
+    AutoModelForSequenceClassification
+)
+import torch
+from lime.lime_text import LimeTextExplainer
 
-load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = genai.Client()
+# Load your fine-tuned model and tokenizer
+loaded_model = AutoModelForSequenceClassification.from_pretrained("./distilmbert_fake_news_mk7")
+loaded_tokenizer = AutoTokenizer.from_pretrained("./distilmbert_fake_news_mk7")
+loaded_model.eval()
+class_names = ["Fake News", "Real News"]
 
+# Wrap the model in a prediction function for LIME
+def predict_proba(texts):
+    inputs = loaded_tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
+    with torch.no_grad():
+        outputs = loaded_model(**inputs)
+        probs = torch.nn.functional.softmax(outputs.logits, dim=1).cpu().numpy()
+    return probs
+
+# Create a LIME text explainer
+explainer = LimeTextExplainer(class_names=class_names)
+
+# Flask endpoint for frontend
 @app.route("/api/process", methods=["POST"])
 def data_processing():
     data = request.get_json()
@@ -24,90 +45,47 @@ def data_processing():
     
     return jsonify(json.loads(output))
 
+# Data processing if image
 def process_image(img_url):
-    image_bytes = requests.get(img_url).content
-    image = types.Part.from_bytes(
-        data=image_bytes, mime_type="image/jpeg"
-    )
-
-    client = genai.Client()
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        # system_instruction="You are a Fake news detection tool. You are a strict JSON API. Do not say anything outside the format.",
-        contents=["Determine if the input is Fake or Real by extracting the texts inside the image and list top 5 words that made you say it is fake or real and decimal weight that made the word lean towards fake or real with negative values being the fake and positive being real", image],
-        config={
-            "response_mime_type": "application/json",
-            "response_schema": {
-                "type": "object",
-                "properties": {
-                    "verdict": {
-                        "type": "string",
-                        "enum": ["Fake", "Real"]
-                    },
-                    "words": {
-                        "type": "array",
-                        "minItems": 5,
-                        "maxItems": 5,
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "word": {
-                                    "type": "string"
-                                },
-                                "weight": {
-                                    "type": "number"
-                                }
-                            },
-                            "required": ["word", "weight"]
-                        }
-                    }
-                },
-                "required": ["verdict", "words"]
-            }
-        }
-    )
-    print(response.text)
-    return response.text
-
+    # Convert url to image bytes
+    url = img_url
+    resp = requests.get(url, stream=True).raw
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    
+    # Use easyocr to extract text from image
+    reader = easyocr.Reader(['en', 'tl'], gpu=False)
+    results = reader.readtext(image)
+    texts = [text for _, text, _ in results]
+    joined_text = " ".join(texts)
+    
+    # Call the distilmbert function to return the results
+    process_text(joined_text)
+    
+# Data processing if text
 def process_text(text_input):
-    response = client.models.generate_content(
-        model="gemini-2.5-flash", 
-        # system_instruction="You are a Fake news detection tool. You are a strict JSON API. Do not say anything outside the format.",
-        contents=f"Determine if the input is Fake or Real and list top 5 words that made you say it is fake or real and decimal weight that made the word lean towards fake or real with negative values being the fake and positive being real. Here is the client content: {text_input}",
-        config={
-            "response_mime_type": "application/json",
-            "response_schema": {
-                "type": "object",
-                "properties": {
-                    "verdict": {
-                        "type": "string",
-                        "enum": ["Fake", "Real"]
-                    },
-                    "words": {
-                        "type": "array",
-                        "minItems": 5,
-                        "maxItems": 5,
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "word": {
-                                    "type": "string"
-                                },
-                                "weight": {
-                                    "type": "number"
-                                }
-                            },
-                            "required": ["word", "weight"]
-                        }
-                    }
-                },
-                "required": ["verdict", "words"]
-            }
-        }
+    exp = explainer.explain_instance(
+        text_input,        # the input text
+        predict_proba,     # function that returns probability
+        num_features=5,    # how many words to highlight
+        num_samples=500    # number of perturbations
     )
-    print(response.text)
-    return response.text
+    
+    results = {
+        "verdict":{},
+        "features":{}
+    }
+    
+    # prediction probabilities
+    probs = predict_proba([text_input])[0]
+    for label, prob in zip(class_names, probs):
+        results.verdict[label] = f"{prob:.4f}"
+
+    # features and their weights
+    for feature, weight in exp.as_list():
+        results.features[feature] =  f"{weight:.4f}"
+        
+    return results
 
 if __name__ == '__main__':
     app.run(
