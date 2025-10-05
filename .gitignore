@@ -1,2 +1,5 @@
 **/.venv
 **/.env
+**/model.zip
+**/distilmbert_fake_news_mk7
+.DS_Store

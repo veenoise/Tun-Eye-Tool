@@ -26,9 +26,11 @@ let currentStage = "select";
 function showPanel(panelId) {
   log("showPanel ->", panelId);
 
-  document.querySelectorAll("section").forEach((s) => {
-    s.classList.add("hidden");
-  });
+    // Submit data on click
+    submitBtn.addEventListener('click', async (e) => {
+        const scanStep = document.querySelector('.default');
+        const answerBtn = document.querySelector('.answer');
+        const circleSym = document.querySelector('.symbol');
 
   const panel = document.getElementById(panelId);
   if (panel) {
@@ -38,105 +40,101 @@ function showPanel(panelId) {
   }
 }
 
-// ------------------------------
-// Stage Handling
-// ------------------------------
-function updateUIForStage(stage) {
-  log("updateUIForStage ->", stage);
+        const res = await chrome.storage.local.get(null);
+        
+        // Call flask API
+        fetch("http://127.0.0.1:1234/api/process", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Log": res.enableRecord
+            },
+            body: JSON.stringify(res)
+        })
+            .then(res => {
+                return res.json();
+            })
+            .then(output => {
+                console.log(output);
 
-  const stageLabel = $(".tool-stage");
-  const mainPanel = $(".popup-main");
-  const actionBtn = $("#submit");
-  const tip = $(".bottom-tip");
+                scanStep.classList.add("hidden");
+                answerBtn.classList.remove('hidden');
+                answerBtn.childNodes[1].childNodes[2].textContent = output['verdict'];
 
-  if (!stageLabel || !mainPanel || !actionBtn || !tip) {
-    log("⚠ Missing DOM elements. Skipping stage update.");
-    return;
-  }
+                // Change symbol color
+                if (output['verdict'] === "Fake News") {
+                    circleSym.style.backgroundColor = "#F7BF2D";
+                } else if (output['verdict'] === "Real News") {
+                    circleSym.style.backgroundColor = "#035EE6";
+                }
 
-  // Remove all stage classes
-  actionBtn.classList.remove("stage-select", "stage-preview", "stage-analyzing", "stage-result", "extension-disabled");
+                // Populate the result to chart js
+                console.log(output.words.map(item => item.word))
+                console.log(output.words.map(item => item.weight))
+                callChartJs(output.words.map(item => item.word), output.words.map(item => item.weight));
 
-  switch (stage) {
-    case "select":
-      stageLabel.textContent = "Select";
-      actionBtn.textContent = "Start Detection";
-      actionBtn.disabled = true;
-      actionBtn.classList.add("stage-select");
-      tip.textContent = "Tip: Select text or image first.";
-      break;
+                // When user clicks how, it shows the breakdown interface
+                document.querySelector('.breakdown').addEventListener('click', () => {
+                    mainInterface.classList.add('hidden');
+                    settingsInterface.classList.add('hidden');
+                    breakdownInterface.classList.remove('hidden');
+                })
 
-    case "preview":
-      stageLabel.textContent = "Preview";
-      actionBtn.textContent = "Start Detection";
-      actionBtn.disabled = false;
-      actionBtn.classList.add("stage-preview");
-      tip.textContent = "Click to check if it is real or fake.";
-      break;
+                // When user clicks go back, it returns to the main interface
+                document.querySelector('#goBack').addEventListener('click', () => {
+                    mainInterface.classList.remove('hidden');
+                    settingsInterface.classList.add('hidden');
+                    breakdownInterface.classList.add('hidden');
+                })
+            })
+            .catch(err => {
+                console.error(`Error encountered:\n------------------------------\n${err}`)
+            })
+    })
+})
 
-    case "analyzing":
-      stageLabel.textContent = "Analyzing";
-      actionBtn.textContent = "Analyzing...";
-      actionBtn.disabled = true;
-      actionBtn.classList.add("stage-analyzing");
-      tip.textContent = "Please wait...";
-      break;
 
-    case "result":
-      stageLabel.textContent = "Result";
-      actionBtn.textContent = "Return";
-      actionBtn.disabled = false;
-      actionBtn.classList.add("stage-result");
-      tip.innerHTML = `Go to <span style="color: var(--lightblue); font-weight: bold;">📊 Dashboard</span> for more details.`;
-      break;
+// Settings interface
+const enableExtension = document.querySelector('#enable-extension');
+const enableRecord = document.querySelector('#enable-record');
+const doneBtn = document.querySelector('.done');
+document.querySelectorAll('.settings').forEach(settings => {
+    settings.addEventListener('click', () => {
+        body.style.backgroundColor = "#2D2D51";
+        mainInterface.classList.add('hidden');
+        breakdownInterface.classList.add('hidden');
+        settingsInterface.classList.remove('hidden');
 
-    default:
-      log("Unknown stage:", stage);
-  }
-}
+        // Apply previous user settings
+        chrome.storage.local.get(null)
+            .then(res => {
+                enableExtension.checked = !!res.enableExtension;
+                enableRecord.checked = !!res.enableRecord;
 
-function setStage(stage) {
-  log("setStage ->", stage);
-  currentStage = stage;
-  updateUIForStage(stage);
-}
+                // Return to main interface from settings
+                doneBtn.addEventListener('click', () => {
+                    chrome.storage.local.set({
+                        ...res,
+                        "enableExtension": enableExtension.checked,
+                        "enableRecord": enableRecord.checked
+                    })
 
-// ------------------------------
-// Chart Rendering
-// ------------------------------
-function callChartJs(words, values, verdict) {
-  log("Rendering chart with:", { words, values, verdict });
+                    mainInterface.classList.remove('hidden');
+                    settingsInterface.classList.add('hidden');
+                    breakdownInterface.classList.add('hidden');
 
-  const mainContent = $(".popup-main");
-  if (!mainContent) return;
+                    body.style.backgroundColor = "#039BE6";
+                })
+            })
+    })
+})
 
-  // Determine verdict color
-  const verdictColor = verdict === "Fake News" ? "#F7BF2D" : "#035EE6";
-  const verdictText = verdict === "Fake News" ? "⚠ Fake News" : "✓ Real News";
 
-  // Clear and rebuild content
-  mainContent.innerHTML = `
-    <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0;">
-        <h2 style="color: ${verdictColor}; margin: 0; font-size: 32px;">${verdictText}</h2>
-      </div>
-      <div style="flex: 1; width: 100%; min-height: 0;">
-        <canvas id="chartBreakdown"></canvas>
-      </div>
-    </div>
-  `;
+function callChartJs(words, values) {
+    // chart
+    const ctx = document.getElementById('chartBreakdown').getContext('2d');
 
-  // Wait for DOM update, then render chart
-  setTimeout(() => {
-    const ctx = document.getElementById("chartBreakdown");
-    if (!ctx) {
-      log("Canvas not found");
-      return;
-    }
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
+    const data = {
         labels: words,
         datasets: [
           {
