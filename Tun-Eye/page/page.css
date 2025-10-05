@@ -190,6 +190,7 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 500px;
     /* background-color: red; */
 }
 
@@ -199,6 +200,7 @@ body {
     border: 3px solid var(--accentpurple);
     border-radius: 10px;
     padding: 15px;
+    min-height: 0;
 }
 
 /* Usage Box */

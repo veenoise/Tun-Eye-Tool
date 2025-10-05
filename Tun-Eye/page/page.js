@@ -194,12 +194,11 @@ function displayResults(verdict, words) {
   const verdictText = verdict === "Fake News" ? "⚠ Fake News" : "✓ Real News";
 
   resultContent.innerHTML = `
-    <div style="padding: 20px; display: flex; flex-direction: column; height: 100%;">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;">
-        <span style="width: 32px; height: 32px; border-radius: 50%; background-color: ${verdictColor}; flex-shrink: 0;"></span>
-        <h2 style="color: ${verdictColor}; margin: 0; font-size: 36px;">${verdictText}</h2>
+    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; flex-shrink: 0;">
+        <h2 style="color: ${verdictColor}; margin: 0; font-size: 32px;">${verdictText}</h2>
       </div>
-      <div style="flex: 1; width: 100%; min-height: 0;">
+      <div style="flex: 1; width: 100%; min-height: 0; position: relative;">
         <canvas id="dashboardChart"></canvas>
       </div>
     </div>
@@ -296,3 +295,41 @@ function renderChart(words) {
     },
   });
 }
+
+// Test function for dashboard detection
+function testDashboardDetection() {
+  const mockText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris.";
+  
+  const mockOutput = {
+    verdict: "Fake News",
+    words: [
+      { word: "conspiracy", weight: -0.85 },
+      { word: "hoax", weight: -0.72 },
+      { word: "fake", weight: -0.68 },
+      { word: "unverified", weight: -0.45 },
+      { word: "claim", weight: -0.32 },
+      { word: "source", weight: 0.15 },
+      { word: "evidence", weight: 0.42 },
+      { word: "verified", weight: 0.68 },
+      { word: "factual", weight: 0.75 },
+      { word: "authentic", weight: 0.88 }
+    ]
+  };
+  
+  // Fill textarea
+  const textInput = document.querySelector(".text-input");
+  if (textInput) {
+    textInput.value = mockText;
+    textInput.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  
+  // Trigger detection with mock data
+  setTimeout(() => {
+    displayResults(mockOutput.verdict, mockOutput.words);
+  }, 500);
+  
+  console.log("Test executed - mock results should appear in Result panel");
+}
+
+// Run test
+testDashboardDetection();
