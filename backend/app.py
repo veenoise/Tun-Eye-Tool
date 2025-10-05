@@ -35,7 +35,6 @@ explainer = LimeTextExplainer(class_names=class_names)
 # Flask endpoint for frontend
 @app.route("/api/process", methods=["POST"])
 def data_processing():
-    print(request.headers)
     data = request.get_json()
 
     match data['type']:
@@ -69,7 +68,7 @@ def process_text(text_input):
         text_input,        # the input text
         predict_proba,     # function that returns probability
         num_features=5,    # how many words to highlight
-        num_samples=500    # number of perturbations
+        num_samples=10    # number of perturbations
     )
     
     results = {
