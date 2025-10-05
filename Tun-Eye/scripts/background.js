@@ -24,8 +24,8 @@ function genericOnClick(info) {
 
     chrome.windows.getAll().then(res => {
         const screenWidth = res.at(-1).width;
-        const popupHeight = 523;
-        const popupWidth = 438;
+        const popupHeight = 640;
+        const popupWidth = 620;
         console.log(screenWidth)
         chrome.windows.create({
             url: chrome.runtime.getURL('../popup/popup.html'),
