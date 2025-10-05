@@ -150,14 +150,34 @@ function renderChart(labels, values) {
 // Event Listeners
 // ------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-  const mainInterface = document.getElementById("main-interface");
   log("DOMContentLoaded fired.");
 
-  log("Elements:", {
-    toolStage: $(".tool-stage"),
-    main: $(".popup-main"),
-    submit: $("#submit"),
-    tip: $(".bottom-tip"),
+  // Load Content from Storage
+  storage.local.get(null, (res) => {
+    log("Storage loaded:", res);
+
+    const mainContent = $(".popup-main");
+
+    // Display content if it exists
+    if (res.type && res.value) {
+      switch (res.type) {
+        case "text":
+          mainContent.innerHTML = `<p style="color: #2D2D51; padding: 10px;">${res.value}</p>`;
+          setStage("preview");
+          break;
+        case "image":
+          mainContent.innerHTML = `<img src="${res.value}" style="object-fit:contain; width:100%; height:100%; display:block;" />`;
+          setStage("preview");
+          break;
+        default:
+          log("Unknown content type:", res.type);
+          setStage("select");
+          break;
+      }
+    } else {
+      log("No content in storage");
+      setStage("select");
+    }
   });
 
   // Dashboard button
@@ -172,65 +192,57 @@ document.addEventListener("DOMContentLoaded", () => {
   // Settings button
   const settingsBtn = $(".icon-btn.settings");
   const settingsPanel = document.getElementById("settings-panel");
+  const mainInterface = document.getElementById("main-interface");
+  const helpPanel = document.getElementById("help-panel");
 
   if (settingsBtn && settingsPanel && mainInterface) {
     settingsBtn.addEventListener("click", () => {
-        const isHidden = settingsPanel.classList.contains("hidden");
+      const isHidden = settingsPanel.classList.contains("hidden");
 
-        if (isHidden) {
-          log("Opening settings panel");
-          settingsPanel.classList.remove("hidden");
-          mainInterface.classList.add("hidden"); 
-        
-          if (helpPanel && !helpPanel.classList.contains("hidden")) {
-            log("Hiding help panel");
-            helpPanel.classList.add("hidden");
-            mainInterface.classList.remove("hidden"); 
-          }
-        } 
-        else {
-          log("Closing settings panel");
-          settingsPanel.classList.add("hidden");
-          mainInterface.classList.remove("hidden"); 
+      if (isHidden) {
+        log("Opening settings panel");
+        settingsPanel.classList.remove("hidden");
+        mainInterface.classList.add("hidden");
+
+        if (helpPanel && !helpPanel.classList.contains("hidden")) {
+          log("Hiding help panel");
+          helpPanel.classList.add("hidden");
         }
+      } 
+      else {
+        log("Closing settings panel");
+        settingsPanel.classList.add("hidden");
+        mainInterface.classList.remove("hidden");
+      }
     });
   }
 
   // Help button
   const helpBtn = $(".icon-btn.help");
-  const helpPanel = document.getElementById("help-panel");
   if (helpBtn && helpPanel && mainInterface) {
     helpBtn.addEventListener("click", () => {
-        const isHidden = helpPanel.classList.contains("hidden");
-        if (isHidden) { 
-          log("Opening help panel");
-          helpPanel.classList.remove("hidden");
-          mainInterface.classList.add("hidden");
+      const isHidden = helpPanel.classList.contains("hidden");
 
-          if (settingsPanel && !settingsPanel.classList.contains("hidden")) {
-            log("Hiding settings panel");
-            settingsPanel.classList.add("hidden");
-            mainInterface.classList.remove("hidden"); 
-          } 
+      if (isHidden) {
+        log("Opening help panel");
+        helpPanel.classList.remove("hidden");
+        mainInterface.classList.add("hidden");
+
+        if (settingsPanel && !settingsPanel.classList.contains("hidden")) {
+          log("Hiding settings panel");
+          settingsPanel.classList.add("hidden");
         }
-        else {
-          log("Closing help panel");
-          helpPanel.classList.add("hidden");
-          mainInterface.classList.remove("hidden"); 
-        }
+      } 
+      else {
+        log("Closing help panel");
+        helpPanel.classList.add("hidden");
+        mainInterface.classList.remove("hidden");
+      }
     });
   }
 
-  // Done button
-  const doneBtn = $(".done");
-  if (doneBtn) {
-    doneBtn.addEventListener("click", () => {
-      log("Done clicked");
-      showPanel("main-interface");
-    });
-  }
 
-  // Detection button
+  // Detection button 
   const submitBtn = $("#submit");
   if (submitBtn) {
     submitBtn.addEventListener("click", () => {
@@ -248,9 +260,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-  // Initial stage
-  setStage("select");
 });
 
 
