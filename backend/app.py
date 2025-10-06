@@ -88,7 +88,6 @@ def process_text(text_input):
     for feature, weight in exp.as_list():
         results["words"].append({"word": feature, "weight": f"{weight:.4f}"})
     
-    print(results)
     return results
 
 if __name__ == '__main__':
