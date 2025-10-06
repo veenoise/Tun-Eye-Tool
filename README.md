@@ -63,6 +63,13 @@ Install the required dependencies
 pip install -r requirement.txt
 ```
 
+Load the model
+
+```bash
+cat model_part* > model.zip
+unzip model.zip
+```
+
 To deploy run the backend API, make sure that you are in the `Tun-Eye-Tool/backend` directory and run 
 
 ```bash

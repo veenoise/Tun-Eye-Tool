@@ -1,2 +1,5 @@
 **/.venv
 **/.env
+**/distilmbert_fake_news_mk7.zip
+**/distilmbert_fake_news_mk7/
+**/model.zip
