@@ -44,9 +44,10 @@
             <img src="${chrome.runtime.getURL('images/logo.png')}" alt="logo" class="tuneye-brand-logo">
             <div class="tuneye-branding">
                 <h1 class="tuneye-brand-name"><b>TUN-EYE</b></h1>
+                <h1 class="tuneye-brand-subtitle">Fake News Detector</h1>
             </div>
         </div>
-
+        
         <div class="tuneye-header-icons">
             <button class="tuneye-icon-btn tuneye-settings" aria-label="Settings" title="Settings">
                 <img src="${chrome.runtime.getURL('images/settings.png')}" alt="Settings" />
@@ -54,9 +55,11 @@
             <button class="tuneye-icon-btn tuneye-help" aria-label="Help" title="Help">
                 <img src="${chrome.runtime.getURL('images/help.png')}" alt="Help" />
             </button>
-            <button class="tuneye-icon-btn tuneye-close" aria-label="Close" title="Close Panel">×</button>
-            </div>
         </div>
+
+        <button class="tuneye-icon-btn tuneye-close" aria-label="Close" title="Close Panel">x</button>
+    </div>
+        
 
     <section id="tuneye-main-interface" class="">
 
@@ -73,13 +76,13 @@
             <button class="tuneye-btn tuneye-start" id="tuneye-submit">
                 <b>Start Detection</b>
             </button>
-            <p class="tuneye-bottom-tip">Tip: Type text or select text/image first.</p>
         </div>
     </section>
 
     <!-- Settings Panel -->
     <section id="tuneye-settings-panel" class="tuneye-settings-panel tuneye-hidden">
-        <h2 class="tuneye-settings-title">Settings</h2>
+    <br><br>    
+    <h2 class="tuneye-settings-title">Settings</h2>
 
         <div class="tuneye-setting-item">
             <label for="tuneye-enable-record">Record User scans for improvements</label>
@@ -107,8 +110,11 @@
         <h2 class="tuneye-settings-title">Contributors</h2>
         <ol class="tuneye-settings-links">
             <li><a href="https://github.com/veenoise/" target="_blank" rel="noopener">veenoise</a></li>
-            <li><a href=""https://github.com/KnightVicente" target="_blank" rel="noopener">knightvicente</a></li>
-            <li><a href="'about:blank'" target="_blank" rel="noopener">Study</a></li>
+            <li><a href="https://github.com/KnightVicente" target="_blank" rel="noopener">knightvicente</a></li>
+            <li><a href="https://github.com/Gelly-Tr33s" target="_blank" rel="noopener">Gelly-Tr33s</a></li>
+            <li><a href="https://github.com/Shifard" target="_blank" rel="noopener">Shifard</a></li>
+            
+            <li><a href="about:blank" target="_blank" rel="noopener">Study</a></li>
         </ol><br>
 
       </section>
