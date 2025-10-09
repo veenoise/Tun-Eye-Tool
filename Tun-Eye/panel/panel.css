@@ -1,0 +1,390 @@
+.tuneye-panel-container {
+  --tuneye-lightblue: #039BE6;
+  --tuneye-yellow: #F7BF2D;  
+  --tuneye-purple: #403F67;
+  --tuneye-accentpurple: #2D2D51;
+  --tuneye-offwhite: #F5F8FF;
+  --tuneye-white: #FFFFFF;
+  --tuneye-gray: #737373;
+}
+
+/* Panel Container */
+.tuneye-panel-container {
+  all: initial;
+  position: fixed;
+  top: 50%;
+  right: -385px; /* Hidden by default, slide in when visible */
+  transform: translateY(-50%);
+  width: 385px;
+  height: 755px;
+  z-index: 2147483647; /* Maximum z-index */
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  transition: right 0.3s ease-in-out;
+  pointer-events: all;
+}
+
+.tuneye-panel-container.tuneye-visible {
+  right: 0; /* Slide in */
+}
+
+/* Reset all child elements */
+.tuneye-panel-container * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Main container */
+.tuneye-popup-container {
+  background: var(--tuneye-offwhite);
+  border-radius: 15px;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* HEADER */
+.tuneye-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  margin-bottom: 10px;
+}
+
+.tuneye-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tuneye-brand-logo {
+  width: 40px;
+  height: 40px;
+  user-select: none;
+}
+
+.tuneye-brand-name {
+  font-size: 32px;
+  color: var(--tuneye-accentpurple);
+  margin: 0;
+}
+
+.tuneye-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tuneye-icon-btn {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--tuneye-accentpurple);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.tuneye-icon-btn img {
+  pointer-events: none;
+  width: 24px;
+  height: 24px;
+}
+
+.tuneye-icon-btn.tuneye-close {
+  font-size: 32px;
+  padding: 0 8px;
+}
+
+/* Main interface */
+#tuneye-main-interface {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.tuneye-tooltag {
+  text-align: center;
+  user-select: none;
+  color: var(--tuneye-gray);
+  font-size: 18px;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+
+.tuneye-tool-stage {
+  text-align: center;
+  font-size: 32px;
+  color: var(--tuneye-accentpurple);
+  font-weight: bold;
+  user-select: none;
+  margin-bottom: 10px;
+}
+
+/* Main Content area */
+.tuneye-popup-main {
+  background-color: var(--tuneye-white);
+  border: var(--tuneye-accentpurple) solid 5px;
+  border-radius: 15px;
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 450px;
+}
+
+/* Text Input */
+.tuneye-text-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--tuneye-accentpurple);
+  background: transparent;
+  padding: 5px;
+}
+
+.tuneye-text-input::placeholder {
+  color: var(--tuneye-gray);
+  font-style: italic;
+}
+
+/* Image display */
+.tuneye-image-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tuneye-image-display img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Footer */
+.tuneye-footer {
+  margin-top: 15px;
+}
+
+.tuneye-btn {
+  width: 100%;
+  border: var(--tuneye-purple) solid 5px;
+  border-radius: 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tuneye-white);
+  cursor: pointer;
+  font-size: 32px;
+  font-family: 'JetBrains Mono', monospace;
+  background-color: var(--tuneye-purple);
+  height: 70px;
+  transition: all 0.2s ease;
+}
+
+.tuneye-btn:hover {
+  transform: scale(1.01);
+}
+
+.tuneye-btn.tuneye-start {
+  background-color: var(--tuneye-purple);
+  border: var(--tuneye-accentpurple) solid 5px;
+}
+
+.tuneye-bottom-tip {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 16px;
+  letter-spacing: -1px;
+  font-style: italic;
+  user-select: none;
+  color: var(--tuneye-gray);
+}
+
+/* Stage-based button states */
+.tuneye-btn.tuneye-stage-select {
+  color: var(--tuneye-gray);
+  background-color: var(--tuneye-purple);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.tuneye-btn.tuneye-stage-preview {
+  color: var(--tuneye-white);
+  background-color: var(--tuneye-lightblue);
+  cursor: pointer;
+}
+
+.tuneye-btn.tuneye-stage-preview:hover {
+  background-color: #028acc;
+}
+
+.tuneye-btn.tuneye-stage-analyzing {
+  color: var(--tuneye-lightblue);
+  background-color: var(--tuneye-purple);
+  cursor: not-allowed;
+}
+
+.tuneye-btn.tuneye-stage-result {
+  color: var(--tuneye-white);
+  background-color: var(--tuneye-purple);
+  cursor: pointer;
+}
+
+.tuneye-btn.tuneye-stage-result:hover {
+  background-color: #332e59;
+}
+
+.tuneye-btn.tuneye-extension-disabled {
+  color: var(--tuneye-white);
+  background-color: var(--tuneye-purple);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Utility */
+.tuneye-hidden {
+  display: none !important;
+}
+
+/* Settings panel */
+.tuneye-settings-panel {
+  background: var(--tuneye-purple);
+  padding: 16px;
+  border-radius: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.tuneye-settings-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 32px;
+  color: var(--tuneye-lightblue);
+  text-align: center;
+}
+
+.tuneye-setting-item {
+  color: var(--tuneye-white);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+/* Toggle switch */
+.tuneye-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.tuneye-switch input {
+  display: none;
+}
+
+.tuneye-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--tuneye-gray);
+  border-radius: 20px;
+  transition: 0.2s;
+}
+
+.tuneye-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.tuneye-switch input:checked + .tuneye-slider {
+  background-color: var(--tuneye-lightblue);
+}
+
+.tuneye-switch input:checked + .tuneye-slider:before {
+  transform: translateX(20px);
+}
+
+/* Help panel */
+.tuneye-help-panel {
+  background: var(--tuneye-purple);
+  padding: 16px;
+  padding-left: 24px;
+  border-radius: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.tuneye-help-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 32px;
+  color: var(--tuneye-lightblue);
+  text-align: center;
+  user-select: none;
+}
+
+.tuneye-help-panel p {
+  font-size: 16px;
+  font-style: italic;
+  margin: 20px 0;
+  color: var(--tuneye-white);
+}
+
+.tuneye-usage-list {
+  color: var(--tuneye-white);
+  font-size: 18px;
+}
+
+.tuneye-tool-help {
+  margin-left: 20px;
+  list-style-type: decimal;
+}
+
+.tuneye-tool-help li {
+  margin-bottom: 10px;
+}
+
+.tuneye-button-help {
+  color: var(--tuneye-white);
+  list-style-type: none;
+}
+
+.tuneye-button-help li {
+  margin-bottom: 10px;
+}
+
+.tuneye-button-help a {
+  color: var(--tuneye-lightblue);
+  text-decoration: none;
+  font-weight: bold;
+  cursor: default;
+}
