@@ -73,6 +73,7 @@
   font-size: 32px;
   color: var(--tuneye-accentpurple);
   margin: 0;
+  font-family: poppins, sans-serif;
 }
 
 .tuneye-header-icons {
@@ -101,7 +102,7 @@
 
 .tuneye-icon-btn.tuneye-close {
   font-size: 32px;
-  padding: 0 8px;
+  padding: 0px;
 }
 
 /* Main interface */
@@ -111,7 +112,7 @@
   flex: 1;
 }
 
-.tuneye-tooltag {
+/* .tuneye-tooltag {
   text-align: center;
   user-select: none;
   color: var(--tuneye-gray);
@@ -127,7 +128,7 @@
   font-weight: bold;
   user-select: none;
   margin-bottom: 10px;
-}
+} */
 
 /* Main Content area */
 .tuneye-popup-main {
@@ -265,28 +266,35 @@
 
 /* Settings panel */
 .tuneye-settings-panel {
-  background: var(--tuneye-purple);
-  padding: 16px;
-  border-radius: 10px;
+  background: var(--tuneye-offwhite);
+  padding: 5px;
+  border-radius: 15px;
   height: 100%;
   overflow-y: auto;
+  color: black;
 }
 
 .tuneye-settings-title {
   margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 32px;
+  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: bold;
   color: var(--tuneye-lightblue);
-  text-align: center;
+  text-align: left;
+  user-select: none;
 }
 
 .tuneye-setting-item {
-  color: var(--tuneye-white);
-  font-size: 18px;
+  color: black;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 30px;
+}
+
+.tuneye-setting-item label {
+  font-size: 14px;
+  user-select: none;
 }
 
 /* Toggle switch */
@@ -333,53 +341,87 @@
   transform: translateX(20px);
 }
 
-/* Help panel */
-.tuneye-help-panel {
-  background: var(--tuneye-purple);
-  padding: 16px;
-  padding-left: 24px;
-  border-radius: 10px;
-  height: 100%;
-  overflow-y: auto;
-}
-
-.tuneye-help-title {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 32px;
+.tuneye-setting-links {
+  font-size: 12px;
   color: var(--tuneye-lightblue);
   text-align: center;
+  margin-top: 10px;
+}
+
+.tuneye-setting-links a {
+  color: var(--tuneye-lightblue);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Help panel */
+.tuneye-help-panel {
+  background: var(--tuneye-offwhite);
+  color: black;
+  height: 100%;
+  overflow-y: auto;
+  font-family: poppins, sans-serif;
+}
+
+.tuneye-help-img {
+  width: 85%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   user-select: none;
 }
 
-.tuneye-help-panel p {
+.tuneye-help-sub-box {
+  background-color: var(--tuneye-white);
+  border: var(--tuneye-accentpurple) solid 5px;
+  border-radius: 15px;
+  padding: 0px 5px 0px;
+  margin: 0;
+  margin-top: -10px;
+  
+  height: 475px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tuneye-accentpurple) var(--tuneye-offwhite);
+}
+
+.tuneye-help-title {
+  font-family: poppins, sans-serif;
+  margin-bottom: 3px;
   font-size: 16px;
-  font-style: italic;
-  margin: 20px 0;
-  color: var(--tuneye-white);
+  color: var(--tuneye-accentpurple);
+  text-align: left;
+  user-select: none;
+  font-style: bold;
+}
+
+.tuneye-help-subtitle {
+  font-size: 14px;
+  font-style: normal;
+  margin-bottom: 8px;
+  color: black;
 }
 
 .tuneye-usage-list {
-  color: var(--tuneye-white);
-  font-size: 18px;
+  color: black;
+  font-size: 14px;
 }
 
 .tuneye-tool-help {
-  margin-left: 20px;
   list-style-type: decimal;
 }
 
 .tuneye-tool-help li {
-  margin-bottom: 10px;
+  font-family: poppins, sans-serif;
+  margin-bottom: 5px;
+  margin-left: 30px;
 }
 
 .tuneye-button-help {
   color: var(--tuneye-white);
   list-style-type: none;
-}
-
-.tuneye-button-help li {
-  margin-bottom: 10px;
 }
 
 .tuneye-button-help a {

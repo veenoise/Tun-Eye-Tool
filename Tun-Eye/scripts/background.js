@@ -1,4 +1,8 @@
 console.log("[TUN-EYE] Background script loaded");
+
+// ------------------------------
+// Context Menu Handler
+// ------------------------------
 chrome.contextMenus.onClicked.addListener(genericOnClick);
 
 function genericOnClick(info, tab) {
@@ -38,24 +42,10 @@ function genericOnClick(info, tab) {
 function sendShowPanelMessage(tabId) {
     chrome.tabs.sendMessage(tabId, { action: 'showPanel' }, (response) => {
         if (chrome.runtime.lastError) {
-            console.error("[TUN-EYE] Error sending message:", chrome.runtime.lastError.message);
-            console.log("[TUN-EYE] Content script might not be injected yet. Attempting to inject...");
-            
-            // Try to inject content script if it's not already there
-            chrome.scripting.executeScript({
-                target: { tabId: tabId },
-                files: ['panel/panel.js', 'panel/contentScript.js']
-            }, () => {
-                if (chrome.runtime.lastError) {
-                    console.error("[TUN-EYE] Failed to inject content script:", chrome.runtime.lastError.message);
-                } else {
-                    console.log("[TUN-EYE] Content script injected, retrying message...");
-                    // Retry sending message after injection
-                    setTimeout(() => {
-                        chrome.tabs.sendMessage(tabId, { action: 'showPanel' });
-                    }, 500);
-                }
-            });
+            // This is normal - content script might not be ready yet
+            console.log("[TUN-EYE] Content script not responding, will be ready on next interaction");
+            // Don't try to inject manually - let manifest.json handle it
+            // The panel will appear on next interaction
         } else {
             console.log("[TUN-EYE] Panel show message sent successfully");
         }
@@ -71,23 +61,12 @@ chrome.action.onClicked.addListener((tab) => {
     // Toggle panel
     chrome.tabs.sendMessage(tab.id, { action: 'togglePanel' }, (response) => {
         if (chrome.runtime.lastError) {
-            console.error("[TUN-EYE] Error sending toggle message:", chrome.runtime.lastError.message);
-            console.log("[TUN-EYE] Attempting to inject content script...");
-            
-            // Inject content script if not already there
-            chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                files: ['panel/panel.js', 'panel/contentScript.js']
-            }, () => {
-                if (chrome.runtime.lastError) {
-                    console.error("[TUN-EYE] Failed to inject:", chrome.runtime.lastError.message);
-                } else {
-                    console.log("[TUN-EYE] Injected, showing panel...");
-                    setTimeout(() => {
-                        chrome.tabs.sendMessage(tab.id, { action: 'showPanel' });
-                    }, 500);
-                }
-            });
+            // Content script not ready - this is normal for newly loaded pages
+            console.log("[TUN-EYE] Content script not ready yet");
+            // Don't inject manually - it will load automatically
+            // User can try again in a moment
+        } else {
+            console.log("[TUN-EYE] Panel toggled successfully");
         }
     });
 });
