@@ -1,33 +1,62 @@
 {
-    "name": "TUN-EYE",
-    "description": "A fake news detection web extension for Philippine politics news",
-    "version": "2.0",
-    "manifest_version": 3,
-    "icons": {
-        "16": "images/icon-16.png",
-        "32": "images/icon-32.png",
-        "48": "images/icon-48.png",
-        "128": "images/icon-128.png"
+  "manifest_version": 3,
+  "name": "TUN-EYE",
+  "version": "3.0.0",
+  "description": "Fake news detection extension with floating panel interface",
+  
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "scripting",
+    "activeTab"
+  ],
+  
+  "host_permissions": [
+    "http://127.0.0.1:1234/*",
+    "<all_urls>"
+  ],
+  
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  
+  "action": {
+    "default_icon": {
+      "16": "images/logo.png",
+      "48": "images/logo.png",
+      "128": "images/logo.png"
     },
-    "permissions": [
-        "contextMenus",
-        "windows",
-        "storage"
-    ],
-    "background": {
-        "service_worker": "scripts/background.js"
-    },
-    "action": {
-        "default_popup": "popup/popup.html"
-    },
-    "options_ui": {
-        "page": "page/page.html",
-        "open_in_tab": true
-    },
-    "web_accessible_resources": [{
-        "resources": [
-            "scripts/settings.js"
-        ],
-        "matches": ["<all_urls>"]
-    }]
+    "default_title": "TUN-EYE - Toggle Panel"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "panel/panel.js",
+        "panel/contentScript.js"
+      ],
+      "css": ["panel/panel.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "images/*",
+        "panel/*",
+        "popup/chart.js",
+        "page/page.html",
+        "scripts/settings.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "icons": {
+    "16": "images/logo.png",
+    "48": "images/logo.png",
+    "128": "images/logo.png"
+  }
 }
