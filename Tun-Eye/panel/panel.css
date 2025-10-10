@@ -24,6 +24,15 @@
   pointer-events: all;
 }
 
+.tuneye-panel-container section {
+  opacity: 0;
+  transition: opacity 0.25s ease;    
+}
+
+.tuneye-panel-container section:not(.tuneye-hidden) {
+  opacity: 1;
+}
+
 .tuneye-panel-container.tuneye-visible {
   right: 0; /* Slide in */
 }
@@ -85,6 +94,12 @@
   margin: 0;
   font-family: poppins, sans-serif !important;
   font-weight: bolder !important;
+}
+
+.tuneye-brand-subtitle {
+  font-size: 14px;
+  font-family: poppins, sans-serif;
+  color: var(--tuneye-purple);
 }
 
 .tuneye-header-icons {
@@ -177,6 +192,7 @@
   font-size: 16px;
   color: var(--tuneye-accentpurple);
   padding: 5px;
+  background-color: var(--tuneye-white);
 }
 
 .tuneye-popup-main:has(.tuneye-text-input:focus) {

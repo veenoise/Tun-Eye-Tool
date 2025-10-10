@@ -46,11 +46,9 @@
   function updateUIForStage(stage) {
     log("updateUIForStage ->", stage);
 
-    const stageLabel = $('.tuneye-tool-stage');
     const actionBtn = $('#tuneye-submit');
-    const tip = $('.tuneye-bottom-tip');
 
-    if (!stageLabel || !actionBtn || !tip) {
+    if (!actionBtn) {
       log("⚠ Missing DOM elements. Skipping stage update.");
       return;
     }
@@ -61,40 +59,31 @@
       'tuneye-stage-preview',
       'tuneye-stage-analyzing',
       'tuneye-stage-result',
-      'tuneye-extension-disabled'
     );
 
     switch (stage) {
       case "select":
-        stageLabel.textContent = "Select";
         actionBtn.innerHTML = "<b>Start Detection</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-select');
-        tip.textContent = "Tip: Type text or select text/image first.";
         break;
 
       case "preview":
-        stageLabel.textContent = "Preview";
         actionBtn.innerHTML = "<b>Start Detection</b>";
         actionBtn.disabled = false;
         actionBtn.classList.add('tuneye-stage-preview');
-        tip.textContent = "Click to check if it is real or fake.";
         break;
 
       case "analyzing":
-        stageLabel.textContent = "Analyzing";
         actionBtn.innerHTML = "<b>Analyzing...</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-analyzing');
-        tip.textContent = "Please wait...";
         break;
 
       case "result":
-        stageLabel.textContent = "Result";
         actionBtn.innerHTML = "<b>Return</b>";
         actionBtn.disabled = false;
         actionBtn.classList.add('tuneye-stage-result');
-        tip.innerHTML = `Go to <span style="color: var(--tuneye-lightblue); font-weight: bold;">📊 Dashboard</span> for more details.`;
         break;
 
       default:
@@ -135,22 +124,53 @@
   }
 
   function clearContent() {
+    log("clearContent called");
+    const mainContent = $('.tuneye-popup-main');
     const textInput = $('#tuneye-text-input');
     const imageDisplay = $('#tuneye-image-display');
 
-    if (textInput) {
-      textInput.value = '';
-      textInput.classList.remove('tuneye-hidden');
-    }
-    if (imageDisplay) {
-      imageDisplay.innerHTML = '';
-      imageDisplay.classList.add('tuneye-hidden');
+    if (!textInput || !imageDisplay) {
+      log("Rebuilding main content structure...");
+      if (mainContent) {
+        mainContent.innerHTML = `
+          <textarea 
+            id="tuneye-text-input" 
+            class="tuneye-text-input" 
+            placeholder="Your selected text will appear here.&#10;&#10;You can also type or paste text directly, or right-click highlighted text to load it here."
+          ></textarea>
+          <div id="tuneye-image-display" class="tuneye-image-display tuneye-hidden"></div>
+        `;
+        
+        const newTextInput = $('#tuneye-text-input');
+        if (newTextInput) {
+          newTextInput.addEventListener('input', () => {
+            const hasText = newTextInput.value.trim().length > 0;
+            if (hasText && currentContentType !== 'image') {
+              currentContentType = 'text';
+              if (currentStage === 'select') {
+                setStage('preview');
+              }
+            } else if (!hasText && currentContentType === 'text') {
+              setStage('select');
+            }
+          });
+        }
+      }
+    } else {
+      // Elements exist, just clear them
+      if (textInput) {
+        textInput.value = '';
+        textInput.classList.remove('tuneye-hidden');
+      }
+      if (imageDisplay) {
+        imageDisplay.innerHTML = '';
+        imageDisplay.classList.add('tuneye-hidden');
+      }
     }
 
     currentContentType = null;
     setStage('select');
   }
-
   // ------------------------------
   // Initialize panel
   // ------------------------------
@@ -163,12 +183,6 @@
 
       const submitBtn = $('#tuneye-submit');
 
-      // Set default values if not present
-      if (!("enableExtension" in res)) {
-        storage.local.set({ enableExtension: true });
-        res.enableExtension = true;
-      }
-
       // Display content if it exists
       if (res.type && res.value) {
         displayContent(res.type, res.value);
@@ -176,20 +190,12 @@
         setStage('select');
       }
 
-      // Apply enableExtension state
-      if (res.enableExtension === false && submitBtn) {
-        log("Extension disabled - disabling submit button");
-        submitBtn.disabled = true;
-        submitBtn.classList.add('tuneye-extension-disabled');
-        submitBtn.innerHTML = "<b>Extension Disabled</b>";
-      }
-
       // Apply settings to checkboxes
-      const enableExtensionCheckbox = $('#tuneye-enable-extension');
+      const enableTestModeCheckbox = $('#tuneye-enable-testmode');
       const enableRecordCheckbox = $('#tuneye-enable-record');
       const enableInstructionCheckbox = $('#tuneye-enable-instructionOnStartup');
 
-      if (enableExtensionCheckbox) enableExtensionCheckbox.checked = res.enableExtension !== false;
+      if (enableTestModeCheckbox) enableTestModeCheckbox.checked = res.enableTestMode === true;
       if (enableRecordCheckbox) enableRecordCheckbox.checked = res.enableRecord === true;
       if (enableInstructionCheckbox) enableInstructionCheckbox.checked = res.enableInstructionOnStartup === true;
     });
@@ -224,24 +230,6 @@
             displayContent(newType, newValue);
           }
         }
-
-        // Handle enableExtension changes
-        if (changes.enableExtension) {
-          const submitBtn = $('#tuneye-submit');
-          const newValue = changes.enableExtension.newValue;
-
-          if (submitBtn) {
-            if (newValue === true) {
-              submitBtn.disabled = false;
-              submitBtn.classList.remove('tuneye-extension-disabled');
-              updateUIForStage(currentStage);
-            } else {
-              submitBtn.disabled = true;
-              submitBtn.classList.add('tuneye-extension-disabled');
-              submitBtn.innerHTML = "<b>Extension Disabled</b>";
-            }
-          }
-        }
       }
     });
 
@@ -266,15 +254,6 @@
       });
     }
 
-    // Dashboard button
-    const dashBtn = $('.tuneye-dashboard');
-    if (dashBtn) {
-      dashBtn.addEventListener('click', () => {
-        log("Dashboard clicked");
-        chrome.tabs.create({ url: chrome.runtime.getURL('page/page.html') });
-      });
-    }
-
     // Settings button
     const settingsBtn = $('.tuneye-settings');
     if (settingsBtn) {
@@ -285,8 +264,10 @@
         
         if (isHidden) {
           showSection('tuneye-settings-panel');
+          setActiveHeader('settings');
         } else {
           showSection('tuneye-main-interface');
+          setActiveHeader(null);
         }
       });
     }
@@ -301,21 +282,40 @@
         
         if (isHidden) {
           showSection('tuneye-help-panel');
+          setActiveHeader('help');
         } else {
           showSection('tuneye-main-interface');
+          setActiveHeader(null);
         }
       });
     }
 
+    // Helper: highlight the active icon
+    function setActiveHeader(buttonName) {
+    const settingsBtn = $('.tuneye-settings');
+    const helpBtn = $('.tuneye-help');
+
+    [settingsBtn, helpBtn].forEach(btn => {
+        if (btn) btn.style.backgroundColor = 'transparent';
+    });
+
+    if (buttonName === 'settings' && settingsBtn) {
+        settingsBtn.style.backgroundColor = 'var(--tuneye-purple)';
+    } else if (buttonName === 'help' && helpBtn) {
+        helpBtn.style.backgroundColor = 'var(--tuneye-purple)';
+    }
+    }
+
+
     // Settings checkboxes
-    const enableExtensionCheckbox = $('#tuneye-enable-extension');
+    const enableTestModeCheckbox = $('#tuneye-enable-testmode');
     const enableRecordCheckbox = $('#tuneye-enable-record');
     const enableInstructionCheckbox = $('#tuneye-enable-instructionOnStartup');
 
-    if (enableExtensionCheckbox) {
-      enableExtensionCheckbox.addEventListener('change', (e) => {
-        storage.local.set({ enableExtension: e.target.checked });
-        log("enableExtension set to:", e.target.checked);
+    if (enableTestModeCheckbox) {
+      enableTestModeCheckbox.addEventListener('change', (e) => {
+        storage.local.set({ enableTestMode: e.target.checked });
+        log("enableTestMode set to:", e.target.checked);
       });
     }
 
@@ -344,6 +344,43 @@
           setStage('analyzing');
 
           try {
+            // Get settings
+            const settings = await new Promise((resolve) => {
+              storage.local.get(['enableRecord', 'enableTestMode'], resolve);
+            });
+
+            // Check if test mode is enabled
+            if (settings.enableTestMode === true) {
+              log("🧪 TEST MODE: Using fake data");
+              
+              // Simulate API delay
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
+              // Generate random fake/real verdict
+              const isFake = Math.random() > 0.5;
+              const mockOutput = {
+                verdict: isFake ? "Fake News" : "Real News",
+                words: [
+                  { word: "hoax", weight: -0.8 },
+                  { word: "misleading", weight: -0.4 },
+                  { word: "truth", weight: 0.7 },
+                  { word: "verified", weight: 0.9 },
+                  { word: "confirmed", weight: 0.85 }
+                ]
+              };
+
+              log("🧪 Mock API response:", mockOutput);
+
+              // Transition to result stage
+              setStage('result');
+
+              // Display verdict and chart
+              displayResults(mockOutput);
+
+              return; // Exit early, don't call real API
+            }
+
+            // REAL API CALL (if test mode disabled)
             // Prepare data for API
             const textInput = $('#tuneye-text-input');
             let dataToSend = {};
@@ -360,11 +397,6 @@
               });
               dataToSend = storageData;
             }
-
-            // Get settings
-            const settings = await new Promise((resolve) => {
-              storage.local.get(['enableRecord'], resolve);
-            });
 
             log("Sending to API:", dataToSend);
 
@@ -401,7 +433,7 @@
             // Show error to user
             const mainContent = $('.tuneye-popup-main');
             if (mainContent) {
-              mainContent.innerHTML = `<p style="color: red; padding: 10px; text-align: center;">Error: Could not connect to detection service. Make sure the backend is running.</p>`;
+              mainContent.innerHTML = `<p style="color: red; padding: 10px; text-align: center; font-family: 'JetBrains Mono', monospace;">⚠️ Error: Could not connect to detection service.<br><br>Make sure the backend is running, or enable <strong>Test Mode</strong> in Settings to try without backend.</p>`;
             }
           }
 
@@ -452,7 +484,8 @@
     if (typeof Chart === 'undefined') {
       log("Loading Chart.js...");
       const script = document.createElement('script');
-      script.src = chrome.runtime.getURL('popup/chart.js');
+    //   script.src = chrome.runtime.getURL('chart.js');
+      script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js";
       script.onload = () => {
         log("Chart.js loaded");
         renderChart(words, verdict);
@@ -464,6 +497,7 @@
   }
 
   function renderChart(words, verdict) {
+    log("renderChart called with:", words)
     setTimeout(() => {
       const ctx = document.getElementById('tuneye-chartBreakdown');
       if (!ctx) {
@@ -471,7 +505,16 @@
         return;
       }
 
-      new Chart(ctx, {
+    log("✓ Canvas found, checking Chart.js...");
+      
+    if (typeof Chart === 'undefined') {
+        log("❌ Chart.js still not loaded!");
+        return;
+    }
+
+    log("✓ Chart.js loaded, creating chart...");
+
+    new Chart(ctx, {
         type: "bar",
         data: {
           labels: words.map(item => item.word),
@@ -541,7 +584,8 @@
             },
           },
         },
-      });
+      });      
+      log("✓ Chart created successfully!");
     }, 100);
   }
 

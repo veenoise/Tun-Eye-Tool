@@ -33,6 +33,7 @@
     {
       "matches": ["<all_urls>"],
       "js": [
+        "panel/chart.js",
         "panel/panel.js",
         "panel/contentScript.js"
       ],
@@ -47,6 +48,7 @@
         "images/*",
         "panel/*",
         "popup/chart.js",
+        "panel/chart.js",
         "page/page.html",
         "scripts/settings.js"
       ],

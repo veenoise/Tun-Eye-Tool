@@ -85,6 +85,14 @@
     <h2 class="tuneye-settings-title">Settings</h2>
 
         <div class="tuneye-setting-item">
+            <label for="tuneye-enable-testmode">Test Mode (use fake data)</label>
+            <label class="tuneye-switch">
+                <input type="checkbox" id="tuneye-enable-testmode">
+                <span class="tuneye-slider"></span>
+            </label>
+        </div>
+
+        <div class="tuneye-setting-item">
             <label for="tuneye-enable-record">Record User scans for improvements</label>
             <label class="tuneye-switch">
                 <input type="checkbox" id="tuneye-enable-record">
