@@ -63,7 +63,7 @@
 
     switch (stage) {
       case "select":
-        actionBtn.innerHTML = "<b>Start Detection</b>";
+        actionBtn.innerHTML = "<b>Enter an Input</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-select');
         break;
@@ -129,17 +129,26 @@
     const textInput = $('#tuneye-text-input');
     const imageDisplay = $('#tuneye-image-display');
 
-    if (!textInput || !imageDisplay) {
-      log("Rebuilding main content structure...");
-      if (mainContent) {
-        mainContent.innerHTML = `
-          <textarea 
+if (!textInput || !imageDisplay) {
+  log("Rebuilding main content structure...");
+  if (mainContent) {
+    mainContent.innerHTML = `
+        <textarea 
             id="tuneye-text-input" 
             class="tuneye-text-input" 
-            placeholder="Your selected text will appear here.&#10;&#10;You can also type or paste text directly, or right-click highlighted text to load it here."
-          ></textarea>
-          <div id="tuneye-image-display" class="tuneye-image-display tuneye-hidden"></div>
-        `;
+            placeholder="Your selected text will appear here.
+
+
+1. Highlight text or hover your mouse over an image, then right-click to open your browser menu.
+
+2. Select 'ipa-Tun-eye'.
+
+3. Click 'Start Detection' to start the analysis.
+
+4. View the results to see credibility insights."
+        ></textarea>
+      <div id="tuneye-image-display" class="tuneye-image-display tuneye-hidden"></div>
+    `;
         
         const newTextInput = $('#tuneye-text-input');
         if (newTextInput) {
@@ -376,6 +385,8 @@
 
               // Display verdict and chart
               displayResults(mockOutput);
+              // Add chart zoom controls after chart is rendered
+              setTimeout(() => addChartControls(), 500);
 
               return; // Exit early, don't call real API
             }
@@ -422,6 +433,8 @@
 
             // Display verdict and chart
             displayResults(output);
+            // Add chart zoom controls after chart is rendered
+            setTimeout(() => addChartControls(), 500);
 
           } catch (err) {
             log("Error during detection:", err);
@@ -484,14 +497,19 @@
     if (typeof Chart === 'undefined') {
       log("Loading Chart.js...");
       const script = document.createElement('script');
-    //   script.src = chrome.runtime.getURL('chart.js');
+    // script.src = chrome.runtime.getURL('chart.js');
       script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js";
       script.onload = () => {
         log("Chart.js loaded");
         renderChart(words, verdict);
       };
+      script.onerror = () => {
+      log("X Failed to load Chart.js!");
+      };
       document.head.appendChild(script);
-    } else {
+    } 
+    else {
+      log("✓ Chart.js already loaded");
       renderChart(words, verdict);
     }
   }
@@ -508,85 +526,97 @@
     log("✓ Canvas found, checking Chart.js...");
       
     if (typeof Chart === 'undefined') {
-        log("❌ Chart.js still not loaded!");
+        log("X Chart.js still not loaded!");
         return;
     }
 
     log("✓ Chart.js loaded, creating chart...");
 
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: words.map(item => item.word),
-          datasets: [
-            {
-              label: "Confidence Score",
-              data: words.map(item => item.weight),
-              backgroundColor: words.map(item => item.weight < 0 ? "#F7BF2D" : "#035EE6"),
-            },
-          ],
-        },
-        options: {
-          maintainAspectRatio: false,
-          indexAxis: "y",
-          scales: {
-            x: {
-              min: -1,
-              max: 1,
-              grid: {
-                color: (context) => (context.tick.value === 0 ? "#2D2D51" : "transparent"),
-                lineWidth: (context) => (context.tick.value === 0 ? 2 : 0),
+      try {
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: words.map(item => item.word),
+            datasets: [
+              {
+                label: "Confidence Score",
+                data: words.map(item => item.weight),
+                backgroundColor: words.map(item => item.weight < 0 ? "#F7BF2D" : "#035EE6"),
               },
-              ticks: {
-                callback: function (value) {
-                  return (value > 0 ? "+" : "") + value;
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            indexAxis: "y",
+            scales: {
+              x: {
+                min: -1,
+                max: 1,
+                grid: {
+                  color: (context) => (context.tick.value === 0 ? "#2D2D51" : "transparent"),
+                  lineWidth: (context) => (context.tick.value === 0 ? 2 : 0),
+                  drawBorder: false,
+                //   display: false,
+                },
+                ticks: {
+                    display: false,
+                //   callback: function (value) {
+                //     return (value > 0 ? "+" : "") + value;
+                //   },
+                  color: "#2D2D51",
+                  font: {
+                    size: 10,
+                  },
+                },
+              },
+              y: {
+                grid: {
+                  drawBorder: false,
+                },
+                ticks: {
+                  color: "#2D2D51",
+                  font: {
+                    size: 13,
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => {
+                    return `${ctx.dataset.label}: ${ctx.raw}`;
+                  },
+                },
+              },
+              title: {
+                display: true,
+                text: "          Fake            Neutral            Real",
+                font: {
+                  family: `monospace`,
+                  size: 15,
+                  weight: `bold`
+                },
+                padding: {
+                  top: 5,
+                  bottom: 5,
+                  left: 100,
                 },
                 color: "#2D2D51",
-                font: {
-                  size: 10,
-                },
-              },
-            },
-            y: {
-              grid: {
-                drawBorder: false,
-              },
-              ticks: {
-                color: "#2D2D51",
-                font: {
-                  size: 10,
-                },
+                align: `center`
               },
             },
           },
-          plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => {
-                  return `${ctx.dataset.label}: ${ctx.raw}`;
-                },
-              },
-            },
-            title: {
-              display: true,
-              text: "Fake                    Neutral                    Real",
-              font: {
-                size: 11,
-              },
-              padding: {
-                top: 5,
-                bottom: 5,
-              },
-              color: "#2D2D51",
-            },
-          },
-        },
-      });      
-      log("✓ Chart created successfully!");
-    }, 100);
+        });
+        
+        log("✅ Chart created successfully!");
+      } catch (err) {
+        log("❌ Error creating chart:", err);
+      }
+    }, 200); // Increased timeout to 200ms for safety
   }
 
   // ------------------------------

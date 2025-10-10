@@ -67,7 +67,16 @@
             <textarea 
                 id="tuneye-text-input" 
                 class="tuneye-text-input" 
-                placeholder="Your selected text will appear here.&#10;&#10;You can also type or paste text directly, or right-click highlighted text to load it here."
+                placeholder="Your selected text will appear here.
+
+                
+1. Highlight text or hover your mouse over an image, then right-click to open your browser menu.
+
+2. Select 'ipa-Tun-eye'.
+
+3. Click 'Start Detection' to start the analysis.
+
+4. View the results to see credibility insights."
             ></textarea>
             <div id="tuneye-image-display" class="tuneye-image-display tuneye-hidden"></div>
         </div>
@@ -92,13 +101,13 @@
             </label>
         </div>
 
-        <div class="tuneye-setting-item">
+        <!-- <div class="tuneye-setting-item">
             <label for="tuneye-enable-record">Record User scans for improvements</label>
             <label class="tuneye-switch">
                 <input type="checkbox" id="tuneye-enable-record">
                 <span class="tuneye-slider"></span>
             </label>
-        </div>
+        </div> -->
 
         <div class="tuneye-setting-item">
             <label for="tuneye-enable-instructionOnStartup">Show instructions at startup</label>
@@ -137,7 +146,7 @@
             <div class="tuneye-usage-list">
             <h2 class="tuneye-help-title">How it works</h2>
                 <ol class="tuneye-tool-help">
-                    <li>Highlight text or hover your mouse over an image, then right-click to open your browser menu</li>
+                    <li>Highlight text or hover your mouse over an image, then right-click to open your browser menu.</li>
                     <li>Select "ipa-Tun-eye".</li>
                     <li>Click “Start Detect” to start the analysis.</li>
                     <li>View the results to see credibility insights.</li>
