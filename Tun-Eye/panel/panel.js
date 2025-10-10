@@ -206,8 +206,24 @@ if (!textInput || !imageDisplay) {
 
       if (enableTestModeCheckbox) enableTestModeCheckbox.checked = res.enableTestMode === true;
       if (enableRecordCheckbox) enableRecordCheckbox.checked = res.enableRecord === true;
-      if (enableInstructionCheckbox) enableInstructionCheckbox.checked = res.enableInstructionOnStartup === true;
+      
+      const enableInstruction = res.enableInstructionOnStartup ?? true;
+      if (enableInstructionCheckbox) enableInstructionCheckbox.checked = res.enableInstructionOnStartup = enableInstruction;
+
+          // --- Show instruction/help panel on startup if enabled ---
+        if (res.enableInstructionOnStartup === true) {
+        log("Instruction on startup is enabled — showing help panel first");
+        showSection('tuneye-help-panel');
+        setActiveHeader('help');
+        } else {
+        log("Instruction on startup disabled — showing main panel");
+        showSection('tuneye-main-interface');
+        setActiveHeader(null);
+        }
+
     });
+
+
 
     // Monitor text input changes
     const textInput = $('#tuneye-text-input');
@@ -386,7 +402,7 @@ if (!textInput || !imageDisplay) {
               // Display verdict and chart
               displayResults(mockOutput);
               // Add chart zoom controls after chart is rendered
-              setTimeout(() => addChartControls(), 500);
+            //   setTimeout(() => addChartControls(), 500);
 
               return; // Exit early, don't call real API
             }
@@ -434,7 +450,7 @@ if (!textInput || !imageDisplay) {
             // Display verdict and chart
             displayResults(output);
             // Add chart zoom controls after chart is rendered
-            setTimeout(() => addChartControls(), 500);
+            // setTimeout(() => addChartControls(), 500);
 
           } catch (err) {
             log("Error during detection:", err);
@@ -497,10 +513,20 @@ if (!textInput || !imageDisplay) {
     if (typeof Chart === 'undefined') {
       log("Loading Chart.js...");
       const script = document.createElement('script');
-    // script.src = chrome.runtime.getURL('chart.js');
+    // script.src = chrome.runtime.getURL('chart.js');  
       script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js";
       script.onload = () => {
         log("Chart.js loaded");
+        
+        // zoom functionality
+        const zoomScript = document.createElement('script');
+        zoomScript.src = "https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js";
+        zoomScript.onload = () => {
+        log("chartjs-plugin-zoom loaded");
+        renderChart(words, verdict);
+        };
+        document.head.appendChild(zoomScript);
+
         renderChart(words, verdict);
       };
       script.onerror = () => {
@@ -608,6 +634,17 @@ if (!textInput || !imageDisplay) {
                 color: "#2D2D51",
                 align: `center`
               },
+              zoom: {
+                pan: {
+                    enabled: true,
+                    mode: 'y',
+                },
+                zoom: {
+                    wheel: { enabled: true },
+                    pinch: { enabled: true },
+                    mode: 'y',
+                }
+              }
             },
           },
         });
