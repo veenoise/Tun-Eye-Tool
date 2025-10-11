@@ -63,7 +63,7 @@ Install the required dependencies
 pip install -r requirement.txt
 ```
 
-Load the model
+Load the model. Do this in Linux/MacOS or Git Bash (Windows)
 
 ```bash
 cat model_part* > model.zip
