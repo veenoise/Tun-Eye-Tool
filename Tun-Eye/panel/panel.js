@@ -47,6 +47,7 @@
     log("updateUIForStage ->", stage);
 
     const actionBtn = $('#tuneye-submit');
+    const clearBtn = $('#tuneye-clear');
 
     if (!actionBtn) {
       log("⚠ Missing DOM elements. Skipping stage update.");
@@ -66,24 +67,28 @@
         actionBtn.innerHTML = "<b>Enter an Input</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-select');
+        if (clearBtn) clearBtn.style.display = 'flex';
         break;
 
       case "preview":
         actionBtn.innerHTML = "<b>Start Detection</b>";
         actionBtn.disabled = false;
         actionBtn.classList.add('tuneye-stage-preview');
+        if (clearBtn) clearBtn.style.display = 'flex';
         break;
 
       case "analyzing":
         actionBtn.innerHTML = "<b>Analyzing...</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-analyzing');
+        if (clearBtn) clearBtn.style.display = 'flex';
         break;
 
       case "result":
         actionBtn.innerHTML = "<b>Return</b>";
         actionBtn.disabled = false;
         actionBtn.classList.add('tuneye-stage-result');
+        if (clearBtn) clearBtn.style.display = 'none';
         break;
 
       default:
@@ -264,79 +269,77 @@ if (!textInput || !imageDisplay) {
   // Movable Panel Functionality
   // ------------------------------
   (function enablePanelDragging() {
-  const observer = new MutationObserver(() => {
-    const panelContainer = document.querySelector('.tuneye-panel-container');
-    const header = document.querySelector('.tuneye-popup-header');
+    const observer = new MutationObserver(() => {
+      const panelContainer = document.querySelector('.tuneye-panel-container');
+      const dragHandle = document.querySelector('.tuneye-brand-group');
 
-    if (!panelContainer || !header) return; // wait until both exist
+      if (!panelContainer || !dragHandle) return;
+      observer.disconnect();
 
-    observer.disconnect(); // stop observing once found
+      let isDragging = false;
+      let currentX, currentY, initialX, initialY;
 
-    let isDragging = false;
-    let currentX, currentY, initialX, initialY;
+      // Load saved position
+      chrome.storage.local.get(['panelX', 'panelY'], (res) => {
+        if (res.panelX !== undefined && res.panelY !== undefined) {
+          panelContainer.style.left = res.panelX + 'px';
+          panelContainer.style.top = res.panelY + 'px';
+          panelContainer.style.right = 'auto';
+          panelContainer.style.transform = 'none';
+        }
+      });
 
-    // Load saved position
-    chrome.storage.local.get(['panelX', 'panelY'], (res) => {
-      if (res.panelX !== undefined && res.panelY !== undefined) {
-        panelContainer.style.left = res.panelX + 'px';
-        panelContainer.style.top = res.panelY + 'px';
-        panelContainer.style.right = 'auto';
-        panelContainer.style.transform = 'none';
-      }
+      dragHandle.style.cursor = 'grab';
+
+      dragHandle.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        
+        isDragging = true;
+        panelContainer.classList.add('grabbing');
+
+        const rect = panelContainer.getBoundingClientRect();
+        initialX = e.clientX - rect.left;
+        initialY = e.clientY - rect.top;
+
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event from bubbling
+
+        const drag = (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+
+          const maxX = window.innerWidth - panelContainer.offsetWidth;
+          const maxY = window.innerHeight - panelContainer.offsetHeight;
+          currentX = Math.max(0, Math.min(currentX, maxX));
+          currentY = Math.max(0, Math.min(currentY, maxY));
+
+          panelContainer.style.left = `${currentX}px`;
+          panelContainer.style.top = `${currentY}px`;
+          panelContainer.style.right = 'auto';
+          panelContainer.style.transform = 'none';
+        };
+
+        const dragEnd = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          panelContainer.classList.remove('grab');
+
+          const rect = panelContainer.getBoundingClientRect();
+          chrome.storage.local.set({ panelX: rect.left, panelY: rect.top });
+
+          document.removeEventListener('mousemove', drag);
+          document.removeEventListener('mouseup', dragEnd);
+        };
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+      });
     });
 
-    header.style.cursor = 'move';
-
-    header.addEventListener('mousedown', dragStart);
-
-    function dragStart(e) {
-      if (e.target.closest('.tuneye-icon-btn') || e.target.closest('button')) return;
-
-      e.preventDefault();
-      isDragging = true;
-      panelContainer.classList.add('dragging');
-
-      const rect = panelContainer.getBoundingClientRect();
-      initialX = e.clientX - rect.left;
-      initialY = e.clientY - rect.top;
-
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', dragEnd);
-    }
-
-    function drag(e) {
-      if (!isDragging) return;
-
-      e.preventDefault();
-      currentX = e.clientX - initialX;
-      currentY = e.clientY - initialY;
-
-      const maxX = window.innerWidth - panelContainer.offsetWidth;
-      const maxY = window.innerHeight - panelContainer.offsetHeight;
-      currentX = Math.max(0, Math.min(currentX, maxX));
-      currentY = Math.max(0, Math.min(currentY, maxY));
-
-      panelContainer.style.left = `${currentX}px`;
-      panelContainer.style.top = `${currentY}px`;
-      panelContainer.style.right = 'auto';
-      panelContainer.style.transform = 'none';
-    }
-
-    function dragEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      panelContainer.classList.remove('dragging');
-
-      const rect = panelContainer.getBoundingClientRect();
-      chrome.storage.local.set({ panelX: rect.left, panelY: rect.top });
-
-      document.removeEventListener('mousemove', drag);
-      document.removeEventListener('mouseup', dragEnd);
-    }
-  });
-
-  // Observe the entire document for when the panel gets injected
-  observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true });
   })();
 
   // ------------------------------
@@ -348,11 +351,32 @@ if (!textInput || !imageDisplay) {
     // Close button
     const closeBtn = $('.tuneye-close');
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent drag interference
         log("Close button clicked");
         const container = document.getElementById('tuneye-panel-container');
         if (container) {
-          container.classList.remove('tuneye-visible');
+          // Check if panel was dragged (has custom position)
+          const wasDragged = container.style.left !== '';
+          
+          if (wasDragged) {
+            // If dragged, just hide it without animation (fade out)
+            container.style.opacity = '0';
+            setTimeout(() => {
+              container.style.display = 'none';
+            }, 200);
+          } else {
+            // If not dragged, use normal CSS slide animation
+            container.classList.remove('tuneye-visible');
+          }
+          
+          // Notify contentScript that panel is closed
+          window.postMessage({ 
+            type: 'TUNEYE_PANEL_CLOSED',
+            source: 'tuneye-panel' 
+          }, '*');
+          
+          log("Panel closed");
         }
       });
     }

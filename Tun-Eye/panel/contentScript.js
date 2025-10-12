@@ -207,6 +207,10 @@
     
     const container = document.getElementById('tuneye-panel-container');
     if (container) {
+      // Reset display and opacity if they were set by close button
+      container.style.display = '';
+      container.style.opacity = '';
+      
       container.classList.add('tuneye-visible');
       panelVisible = true;
       console.log("[TUN-EYE] Panel shown");
@@ -216,7 +220,20 @@
   function hidePanel() {
     const container = document.getElementById('tuneye-panel-container');
     if (container) {
-      container.classList.remove('tuneye-visible');
+      // Check if panel was dragged
+      const wasDragged = container.style.left !== '';
+      
+      if (wasDragged) {
+        // Fade out if dragged
+        container.style.opacity = '0';
+        setTimeout(() => {
+          container.style.display = 'none';
+        }, 200);
+      } else {
+        // Use CSS animation if not dragged
+        container.classList.remove('tuneye-visible');
+      }
+      
       panelVisible = false;
       console.log("[TUN-EYE] Panel hidden");
     }
@@ -249,6 +266,12 @@
         hidePanel();
         sendResponse({ success: true });
         break;
+      case 'panelClosed':
+        // Panel was closed via close button, update state
+        panelVisible = false;
+        console.log("[TUN-EYE] Panel state updated: closed");
+        sendResponse({ success: true });
+        break;
       default:
         console.log("[TUN-EYE] Unknown action:", message.action);
     }
@@ -260,5 +283,17 @@
   // Initialize on load
   // ------------------------------
   console.log("[TUN-EYE] Content script ready, waiting for commands");
+
+  // ------------------------------
+  // Listen for messages from panel
+  // ------------------------------
+  window.addEventListener('message', (event) => {
+    if (event.source !== window) return;
+    
+    if (event.data.type === 'TUNEYE_PANEL_CLOSED' && event.data.source === 'tuneye-panel') {
+      console.log("[TUN-EYE] Panel closed via close button");
+      panelVisible = false;
+    }
+  });
 
 })();
