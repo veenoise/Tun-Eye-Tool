@@ -20,7 +20,7 @@ It's a tool for anyone who wants to stay informed and think critically about the
 ## Authors
 
 - [William Eduard Chua](https://github.com/veenoise)
-- [Jason Espallardo](https://github.com/Shifardise)
+- [Jason Espallardo](https://github.com/Shifard)
 - [Whayne Tyrece Tan](https://github.com/TyreceT)
 - [Nigel Frederick Torres](https://github.com/Gelly-Tr33s)
 - [Jedric Knight Vicente](https://github.com/KnightVicente)
@@ -60,7 +60,7 @@ source .venv/bin/activate     # In Linux
 Install the required dependencies
 
 ```bash
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 Load the model. Do this in Linux/MacOS or Git Bash (Windows)
