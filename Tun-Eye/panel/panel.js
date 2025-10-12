@@ -315,6 +315,22 @@ if (!textInput || !imageDisplay) {
       });
     }
 
+    // Clear button
+    const clearBtn = $('#tuneye-clear');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        log("Clear button clicked");
+        
+        // Clear storage
+        storage.local.remove(['type', 'value'], () => {
+          log("Cleared content from storage");
+        });
+        
+        // Reset content and stage
+        clearContent();
+      });
+    }
+
     // Helper: highlight the active icon
     function setActiveHeader(buttonName) {
     const settingsBtn = $('.tuneye-settings');

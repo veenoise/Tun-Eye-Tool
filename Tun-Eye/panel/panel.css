@@ -225,6 +225,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  gap: 10px;
 }
 
 .tuneye-btn {
@@ -248,6 +249,28 @@
 .tuneye-btn.tuneye-start {
   background-color: var(--tuneye-purple);
   border: var(--tuneye-accentpurple) solid 5px;
+}
+
+.tuneye-btn-small {
+  height: 60px;
+  width: 60px;
+  border: var(--tuneye-accentpurple) solid 5px;
+  border-radius: 5px;
+  background-color: var(--tuneye-lightblue);
+  color: var(--tuneye-purple);
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.tuneye-btn-small:hover {
+  background-color: #028acc;
+  color: var(--tuneye-white);
 }
 
 /* Stage-based button states */

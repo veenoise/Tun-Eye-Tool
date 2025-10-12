@@ -85,6 +85,7 @@
             <button class="tuneye-btn tuneye-start" id="tuneye-submit">
                 <b>Start Detection</b>
             </button>
+            <button class="tuneye-btn-small tuneye-clear" id="tuneye-clear"><img src="${chrome.runtime.getURL('images/Reset.png')}" alt="Reset" /></button>
         </div>
     </section>
 
