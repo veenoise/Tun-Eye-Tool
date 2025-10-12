@@ -626,11 +626,15 @@ if (!textInput || !imageDisplay) {
     const verdictColor = verdict === "Fake News" ? "#F7BF2D" : "#035EE6";
     const verdictText = verdict === "Fake News" ? "⚠ Fake News" : "✓ Real News";
 
+    // Extract the confidence score for the displayed verdict
+    const confidenceScore = (output.confidence[verdict] * 100).toFixed(1);
+    const verdictWithConfidence = `${verdictText} (${confidenceScore}%)`;
+
     // Clear and rebuild content
     mainContent.innerHTML = `
       <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
         <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
-          <h2 style="color: ${verdictColor}; margin: 0; font-size: 28px;">${verdictText}</h2>
+          <h2 style="color: ${verdictColor}; margin: 0; font-size: 28px;">${verdictWithConfidence}</h2>
         </div>
         <div style="flex: 1; width: 100%; min-height: 0; position: relative">
           <canvas id="tuneye-chartBreakdown"></canvas>
