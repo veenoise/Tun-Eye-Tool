@@ -1,0 +1,521 @@
+.tuneye-panel-container {
+  --tuneye-lightblue: #039BE6;
+  --tuneye-yellow: #F7BF2D;  
+  --tuneye-purple: #403F67;
+  --tuneye-accentpurple: #2D2D51;
+  --tuneye-offwhite: #F5F8FF;
+  --tuneye-white: #FFFFFF;
+  --tuneye-gray: #737373;
+}
+
+/* Panel Container */
+.tuneye-panel-container {
+  all: initial;
+  position: fixed;
+  top: 50%;
+  right: -385px; /* Hidden by default, slide in when visible */
+  transform: translateY(-50%);
+  width: 385px;
+  height: 755px;
+  z-index: 2147483647; /* Maximum z-index */
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  transition: right 0.3s ease-in-out;
+  pointer-events: auto !important;
+}
+
+.tuneye-panel-container section {
+  opacity: 0;
+  transition: opacity 0.25s ease;    
+}
+
+.tuneye-panel-container section:not(.tuneye-hidden) {
+  opacity: 1;
+}
+
+.tuneye-panel-container.tuneye-visible {
+  right: 0; /* Slide in */
+}
+
+/* Reset all child elements */
+.tuneye-panel-container * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Main container */
+.tuneye-popup-container {
+  background: var(--tuneye-offwhite);
+  border-radius: 15px;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tuneye-popup-header, .tuneye-brand-group {
+  pointer-events: auto !important;
+}
+
+.tuneye-panel-container.dragging {
+  opacity: 0.9;
+  cursor: move;
+  transition: none !important;
+}
+
+/* HEADER */
+.tuneye-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* padding: 6px 4px; */
+  user-select: none;
+  margin-bottom: 0px;
+  max-height: 75px;
+}
+
+.tuneye-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-left: 10px;
+  margin-top: -10px;
+}
+
+.tuneye-brand-logo {
+  width: 90px;
+  height: 90px;
+  user-select: none;
+  margin-left: 20px;
+  -webkit-user-drag: none;
+}
+
+.tuneye-branding {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.tuneye-brand-name {
+  font-size: 30px;
+  color: var(--tuneye-accentpurple);
+  margin: 0;
+  font-family: poppins, sans-serif !important;
+  font-weight: bolder !important;
+}
+
+.tuneye-brand-subtitle {
+  font-size: 14px;
+  font-family: poppins, sans-serif;
+  color: var(--tuneye-purple);
+}
+
+.tuneye-header-icons {
+  display: flex;
+  gap: 0px;
+  flex-direction: column;
+}
+
+.tuneye-icon-btn {
+  background: none;
+  border-radius: 100px;
+  border: none;
+  padding: 5px;
+  transition: all 0.2s ease;
+}
+
+.tuneye-icon-btn:hover {
+  background: var(--tuneye-purple);
+}
+
+.tuneye-icon-btn img {
+  pointer-events: none;
+  width: 24px;
+  height: 24px;
+}
+
+.tuneye-icon-btn.tuneye-close {
+  margin-top: -10px;
+  font-size: 30px;
+  padding: 0px;
+  color: var(--tuneye-accentpurple);
+  border: none;
+  background: transparent;
+  transition: 0.2s;
+}
+
+.tuneye-icon-btn.tuneye-close:hover {
+  color: var(--tuneye-lightblue);
+}
+
+/* Main interface */
+#tuneye-main-interface {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* .tuneye-tooltag {
+  text-align: center;
+  user-select: none;
+  color: var(--tuneye-gray);
+  font-size: 18px;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+
+.tuneye-tool-stage {
+  text-align: center;
+  font-size: 32px;
+  color: var(--tuneye-accentpurple);
+  font-weight: bold;
+  user-select: none;
+  margin-bottom: 10px;
+} */
+
+/* Main Content area */
+.tuneye-popup-main {
+  background-color: var(--tuneye-white);
+  border: var(--tuneye-accentpurple) solid 5px;
+  border-radius: 15px;
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 800px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--tuneye-lightblue) var(--tuneye-offwhite);
+}
+
+/* Text Input */
+.tuneye-text-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--tuneye-accentpurple);
+  padding: 5px;
+  background-color: var(--tuneye-white);
+}
+
+.tuneye-popup-main:has(.tuneye-text-input:focus) {
+  border: var(--tuneye-lightblue) solid 5px;
+}
+
+.tuneye-text-input::placeholder {
+  color: var(--tuneye-gray);
+  font-style: italic;
+}
+
+/* Image display */
+.tuneye-image-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tuneye-image-display img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Footer */
+.tuneye-footer {
+  padding-top: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tuneye-btn {
+  height: 60px;
+  width: 60%;
+  border: var(--tuneye-purple) solid 5px;
+  border-width: 3px;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tuneye-white);
+  cursor: pointer;
+  font-size: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  background-color: none;
+  transition: all 0.25s ease;
+}
+
+.tuneye-btn.tuneye-start {
+  background-color: var(--tuneye-purple);
+  border: var(--tuneye-accentpurple) solid 5px;
+}
+
+.tuneye-btn-small {
+  height: 60px;
+  width: 60px;
+  border: var(--tuneye-accentpurple) solid 5px;
+  border-radius: 5px;
+  background-color: var(--tuneye-lightblue);
+  color: var(--tuneye-purple);
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.tuneye-btn-small:hover {
+  background-color: #028acc;
+  color: var(--tuneye-white);
+}
+
+/* Stage-based button states */
+.tuneye-btn.tuneye-stage-select {
+  color: var(--tuneye-gray);
+  background-color: var(--tuneye-purple);
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+.tuneye-btn.tuneye-stage-preview {
+  color: var(--tuneye-white);
+  background-color: var(--tuneye-lightblue);
+  cursor: pointer;
+}
+
+.tuneye-btn.tuneye-stage-preview:hover {
+  background-color: #028acc;
+}
+
+.tuneye-btn.tuneye-stage-analyzing {
+  color: var(--tuneye-lightblue);
+  background-color: var(--tuneye-purple);
+  cursor: not-allowed;
+}
+
+.tuneye-btn.tuneye-stage-result {
+  color: var(--tuneye-white);
+  background-color: var(--tuneye-purple);
+  cursor: pointer;
+}
+
+.tuneye-btn.tuneye-stage-result:hover {
+  background-color: #332e59;
+}
+
+.tuneye-btn.tuneye-extension-disabled {
+  color: var(--tuneye-white);
+  background-color: var(--tuneye-purple);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Utility */
+.tuneye-hidden {
+  display: none !important;
+}
+
+/* Settings panel */
+.tuneye-settings-panel {
+  background: var(--tuneye-offwhite);
+  padding: 5px;
+  border-radius: 15px;
+  height: 100%;
+  overflow-y: auto;
+  color: black;
+}
+
+.tuneye-settings-title {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--tuneye-lightblue);
+  text-align: left;
+  user-select: none;
+}
+
+.tuneye-settings-subtitle {
+  font-size: 12px;
+  color: var(--tuneye-gray);
+  margin: 0;
+  user-select: none;
+}
+
+.tuneye-setting-item {
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.tuneye-setting-item label {
+  font-size: 14px;
+  user-select: none;
+}
+
+.tuneye-reset-btn {
+  background-color: var(--tuneye-lightblue);
+  color: var(--tuneye-white);
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+  transition: background 0.2s ease;
+}
+
+.tuneye-reset-btn:hover {
+  background-color: #028acc;
+}
+
+
+/* Toggle switch */
+.tuneye-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.tuneye-switch input {
+  display: none;
+}
+
+.tuneye-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--tuneye-gray);
+  border-radius: 20px;
+  transition: 0.2s;
+}
+
+.tuneye-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.tuneye-switch input:checked + .tuneye-slider {
+  background-color: var(--tuneye-lightblue);
+}
+
+.tuneye-switch input:checked + .tuneye-slider:before {
+  transform: translateX(20px);
+}
+
+.tuneye-setting-links {
+  font-size: 12px;
+  color: var(--tuneye-lightblue);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.tuneye-setting-links a {
+  color: var(--tuneye-lightblue);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Help panel */
+.tuneye-help-panel {
+  background: var(--tuneye-offwhite);
+  color: black;
+  height: 100%;
+  overflow-y: auto;
+  font-family: poppins, sans-serif;
+}
+
+.tuneye-help-img {
+  width: 75%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  user-select: none;
+}
+
+.tuneye-help-sub-box {
+  background-color: var(--tuneye-white);
+  border: var(--tuneye-accentpurple) solid 5px;
+  border-radius: 15px;
+  padding: 0px 5px 0px;
+  margin: 0;
+  margin-top: -10px;
+  
+  height: 475px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tuneye-accentpurple) var(--tuneye-offwhite);
+}
+
+.tuneye-help-title {
+  font-family: poppins, sans-serif;
+  margin-bottom: 3px;
+  font-size: 16px;
+  color: var(--tuneye-accentpurple);
+  text-align: left;
+  user-select: none;
+  font-style: bold;
+}
+
+.tuneye-help-subtitle {
+  font-size: 14px;
+  font-style: normal;
+  margin-bottom: 8px;
+  color: black;
+}
+
+.tuneye-usage-list {
+  color: black;
+  font-size: 14px;
+}
+
+.tuneye-tool-help {
+  list-style-type: decimal;
+}
+
+.tuneye-tool-help li {
+  font-family: poppins, sans-serif;
+  margin-bottom: 5px;
+  margin-left: 30px;
+}
+
+.tuneye-button-help {
+  color: var(--tuneye-white);
+  list-style-type: none;
+}
+
+.tuneye-button-help a {
+  color: var(--tuneye-lightblue);
+  text-decoration: none;
+  font-weight: bold;
+  cursor: default;
+}
