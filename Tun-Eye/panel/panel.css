@@ -21,7 +21,7 @@
   font-family: "JetBrains Mono", monospace;
   font-style: normal;
   transition: right 0.3s ease-in-out;
-  pointer-events: all;
+  pointer-events: auto !important;
 }
 
 .tuneye-panel-container section {
@@ -56,6 +56,16 @@
   flex-direction: column;
 }
 
+.tuneye-popup-header, .tuneye-brand-group {
+  pointer-events: auto !important;
+}
+
+.tuneye-panel-container.dragging {
+  opacity: 0.9;
+  cursor: move;
+  transition: none !important;
+}
+
 /* HEADER */
 .tuneye-popup-header {
   display: flex;
@@ -80,6 +90,7 @@
   height: 90px;
   user-select: none;
   margin-left: 20px;
+  -webkit-user-drag: none;
 }
 
 .tuneye-branding {
@@ -358,6 +369,22 @@
   font-size: 14px;
   user-select: none;
 }
+
+.tuneye-reset-btn {
+  background-color: var(--tuneye-lightblue);
+  color: var(--tuneye-white);
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+  transition: background 0.2s ease;
+}
+
+.tuneye-reset-btn:hover {
+  background-color: #028acc;
+}
+
 
 /* Toggle switch */
 .tuneye-switch {

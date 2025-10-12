@@ -118,6 +118,11 @@
             </label>
         </div>
 
+        <div class="tuneye-setting-item">
+            <label>Reset Panel Position</label>
+            <button class="tuneye-reset-btn">Reset</button>
+          </div>
+
         <br><br>
         <h2 class="tuneye-settings-title">About</h2>
         <ol class="tuneye-settings-links">
@@ -131,6 +136,7 @@
             <li><a href="https://github.com/KnightVicente" target="_blank" rel="noopener">knightvicente</a></li>
             <li><a href="https://github.com/Gelly-Tr33s" target="_blank" rel="noopener">Gelly-Tr33s</a></li>
             <li><a href="https://github.com/Shifard" target="_blank" rel="noopener">Shifard</a></li>
+            <li><a href="https://github.com/TyreceT" target="_blank" rel="noopener">TyreceT</a></li>
             
             <li><a href="about:blank" target="_blank" rel="noopener">Study</a></li>
         </ol><br>
