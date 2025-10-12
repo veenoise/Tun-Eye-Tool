@@ -417,9 +417,6 @@ if (!textInput || !imageDisplay) {
 
               // Display verdict and chart
               displayResults(mockOutput);
-              // Add chart zoom controls after chart is rendered
-            //   setTimeout(() => addChartControls(), 500);
-
               return; // Exit early, don't call real API
             }
 
@@ -465,8 +462,6 @@ if (!textInput || !imageDisplay) {
 
             // Display verdict and chart
             displayResults(output);
-            // Add chart zoom controls after chart is rendered
-            // setTimeout(() => addChartControls(), 500);
 
           } catch (err) {
             log("Error during detection:", err);
@@ -519,7 +514,7 @@ if (!textInput || !imageDisplay) {
         <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
           <h2 style="color: ${verdictColor}; margin: 0; font-size: 28px;">${verdictText}</h2>
         </div>
-        <div style="flex: 1; width: 100%; min-height: 0;">
+        <div style="flex: 1; width: 100%; min-height: 0; position: relative">
           <canvas id="tuneye-chartBreakdown"></canvas>
         </div>
       </div>
@@ -533,16 +528,6 @@ if (!textInput || !imageDisplay) {
       script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js";
       script.onload = () => {
         log("Chart.js loaded");
-        
-        // zoom functionality
-        const zoomScript = document.createElement('script');
-        zoomScript.src = "https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js";
-        zoomScript.onload = () => {
-        log("chartjs-plugin-zoom loaded");
-        renderChart(words, verdict);
-        };
-        document.head.appendChild(zoomScript);
-
         renderChart(words, verdict);
       };
       script.onerror = () => {
@@ -558,6 +543,10 @@ if (!textInput || !imageDisplay) {
 
   function renderChart(words, verdict) {
     log("renderChart called with:", words)
+    // Store chart instance globally for zoom controls
+    if (!window.tuneyeChartInstance) {
+      window.tuneyeChartInstance = null;
+    }
     setTimeout(() => {
       const ctx = document.getElementById('tuneye-chartBreakdown');
       if (!ctx) {
@@ -575,7 +564,11 @@ if (!textInput || !imageDisplay) {
     log("✓ Chart.js loaded, creating chart...");
 
       try {
-        new Chart(ctx, {
+        if (window.tuneyeChartInstance) {
+          window.tuneyeChartInstance.destroy();
+        }
+
+        window.tuneyeChartInstance = new Chart(ctx, {
           type: "bar",
           data: {
             labels: words.map(item => item.word),
@@ -598,17 +591,9 @@ if (!textInput || !imageDisplay) {
                   color: (context) => (context.tick.value === 0 ? "#2D2D51" : "transparent"),
                   lineWidth: (context) => (context.tick.value === 0 ? 2 : 0),
                   drawBorder: false,
-                //   display: false,
                 },
                 ticks: {
                     display: false,
-                //   callback: function (value) {
-                //     return (value > 0 ? "+" : "") + value;
-                //   },
-                  color: "#2D2D51",
-                  font: {
-                    size: 10,
-                  },
                 },
               },
               y: {
@@ -650,28 +635,145 @@ if (!textInput || !imageDisplay) {
                 color: "#2D2D51",
                 align: `center`
               },
-              zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'y',
-                },
-                zoom: {
-                    wheel: { enabled: true },
-                    pinch: { enabled: true },
-                    mode: 'y',
-                }
-              }
             },
           },
         });
         
         log("✅ Chart created successfully!");
+        // add zoom controls
+        addChartControls();
       } catch (err) {
         log("❌ Error creating chart:", err);
       }
     }, 200); // Increased timeout to 200ms for safety
   }
+  // Add manual zoom controls to chart
+  function addChartControls() {
+    const mainContent = $('.tuneye-popup-main');
+    if (!mainContent) return;
 
+    // Check if controls already exist
+    if (document.getElementById('tuneye-chart-controls')) {
+      log("Chart controls already exist");
+      return;
+    }
+
+    // Add zoom controls HTML
+    const controlsHTML = `
+      <div id="tuneye-chart-controls" style="
+        position: absolute; 
+        bottom: 10px; 
+        right: 10px; 
+        display: flex; 
+        gap: 5px; 
+        z-index: 1000;
+        background: rgba(255,255,255,0.9);
+        padding: 5px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      ">
+        <button id="tuneye-chart-zoom-in" style="
+          background: var(--tuneye-lightblue); 
+          color: white; 
+          border: none; 
+          border-radius: 5px; 
+          width: 30px;
+          height: 30px;
+          cursor: pointer;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 18px;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        " title="Zoom In">+</button>
+        <button id="tuneye-chart-zoom-out" style="
+          background: var(--tuneye-purple); 
+          color: white; 
+          border: none; 
+          border-radius: 5px; 
+          width: 30px;
+          height: 30px;
+          cursor: pointer;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 18px;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        " title="Zoom Out">−</button>
+        <button id="tuneye-chart-reset" style="
+          background: var(--tuneye-gray); 
+          color: white; 
+          border: none; 
+          border-radius: 5px; 
+          padding: 5px 10px;
+          height: 30px;
+          cursor: pointer;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        " title="Reset Zoom">↻</button>
+      </div>
+    `;
+
+    // Find the chart container
+    const chartContainer = mainContent.querySelector('div[style*="position: relative"]');
+    if (chartContainer) {
+      chartContainer.insertAdjacentHTML('beforeend', controlsHTML);
+
+      log("✓ Chart controls added");
+
+      // Zoom state
+      let zoomLevel = 1;
+      const minZoom = 0.5;
+      const maxZoom = 3;
+
+      // Zoom In button
+      const zoomInBtn = document.getElementById('tuneye-chart-zoom-in');
+      if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => {
+          if (window.tuneyeChartInstance && zoomLevel < maxZoom) {
+            zoomLevel += 0.2;
+            window.tuneyeChartInstance.options.scales.x.min = -1 / zoomLevel;
+            window.tuneyeChartInstance.options.scales.x.max = 1 / zoomLevel;
+            window.tuneyeChartInstance.update('none');
+            log(`📊 Zoomed in: ${zoomLevel.toFixed(1)}x`);
+          }
+        });
+      }
+
+      // Zoom Out button
+      const zoomOutBtn = document.getElementById('tuneye-chart-zoom-out');
+      if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => {
+          if (window.tuneyeChartInstance && zoomLevel > minZoom) {
+            zoomLevel -= 0.2;
+            window.tuneyeChartInstance.options.scales.x.min = -1 / zoomLevel;
+            window.tuneyeChartInstance.options.scales.x.max = 1 / zoomLevel;
+            window.tuneyeChartInstance.update('none');
+            log(`📊 Zoomed out: ${zoomLevel.toFixed(1)}x`);
+          }
+        });
+      }
+
+      // Reset button
+      const resetBtn = document.getElementById('tuneye-chart-reset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (window.tuneyeChartInstance) {
+            zoomLevel = 1;
+            window.tuneyeChartInstance.options.scales.x.min = -1;
+            window.tuneyeChartInstance.options.scales.x.max = 1;
+            window.tuneyeChartInstance.update('none');
+            log('📊 Chart zoom reset');
+          }
+        });
+      }
+    }
+  }
   // ------------------------------
   // Expose initialization function
   // ------------------------------
