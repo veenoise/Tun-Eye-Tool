@@ -1,6 +1,20 @@
 console.log("[TUN-EYE] Background script loaded");
 
 // ------------------------------
+// Message Listener (from panel/content script)
+// ------------------------------
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("[TUN-EYE] Background received message:", message);
+    
+    if (message.action === 'panelClosed') {
+        // Panel was closed via close button
+        console.log("[TUN-EYE] Panel closed notification received");
+        sendResponse({ success: true });
+    }
+    return true;
+});
+
+// ------------------------------
 // Context Menu Handler
 // ------------------------------
 chrome.contextMenus.onClicked.addListener(genericOnClick);

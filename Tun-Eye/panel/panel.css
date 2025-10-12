@@ -125,6 +125,8 @@
   border: none;
   padding: 5px;
   transition: all 0.2s ease;
+  z-index: 1;
+  cursor: pointer; 
 }
 
 .tuneye-icon-btn:hover {
@@ -145,6 +147,9 @@
   border: none;
   background: transparent;
   transition: 0.2s;
+  cursor: pointer;
+  pointer-events: auto !important;
+  z-index: 10;
 }
 
 .tuneye-icon-btn.tuneye-close:hover {
