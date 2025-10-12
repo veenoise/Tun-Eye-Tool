@@ -2,4 +2,6 @@
 **/.env
 **/distilmbert_fake_news_mk7.zip
 **/distilmbert_fake_news_mk7/
+**/distilmbert.zip
+**/distilmbert/
 **/model.zip

@@ -73,5 +73,11 @@ unzip model.zip
 To deploy run the backend API, make sure that you are in the `Tun-Eye-Tool/backend` directory and run 
 
 ```bash
-  python app.py
+python distilmbert.py
+```
+
+or
+
+```bash
+python adaboost_rf.py
 ```
