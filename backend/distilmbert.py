@@ -11,7 +11,6 @@ from transformers import (
 )
 import torch
 from lime.lime_text import LimeTextExplainer
-import json
 
 app = Flask(__name__)
 CORS(app)

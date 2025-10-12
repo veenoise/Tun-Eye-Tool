@@ -67,11 +67,18 @@ def process_text(text_input):
     
     results = {
         "verdict": "",
+        "confidence": {},
         "words": []
     }
     
     # prediction probabilities
     probs = predict_proba([text_input])[0]
+    
+    # dynamically assign label-confidence pairs
+    results["confidence"] = {
+        label: f"{probs[i]:.2f}"
+        for i, label in enumerate(class_names)
+    }
     
     # find the label with the highest probability
     max_index = probs.argmax()
@@ -81,6 +88,8 @@ def process_text(text_input):
     # features and their weights
     for feature, weight in exp.as_list():
         results["words"].append({"word": feature, "weight": f"{weight:.4f}"})
+    
+    print(json.dumps(results, indent=4))
     
     return results
 
