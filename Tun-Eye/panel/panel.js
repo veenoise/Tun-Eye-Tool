@@ -47,6 +47,7 @@
     log("updateUIForStage ->", stage);
 
     const actionBtn = $('#tuneye-submit');
+    const clearBtn = $('#tuneye-clear');
 
     if (!actionBtn) {
       log("⚠ Missing DOM elements. Skipping stage update.");
@@ -66,24 +67,28 @@
         actionBtn.innerHTML = "<b>Enter an Input</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-select');
+        if (clearBtn) clearBtn.style.display = 'flex';
         break;
 
       case "preview":
         actionBtn.innerHTML = "<b>Start Detection</b>";
         actionBtn.disabled = false;
         actionBtn.classList.add('tuneye-stage-preview');
+        if (clearBtn) clearBtn.style.display = 'flex';
         break;
 
       case "analyzing":
         actionBtn.innerHTML = "<b>Analyzing...</b>";
         actionBtn.disabled = true;
         actionBtn.classList.add('tuneye-stage-analyzing');
+        if (clearBtn) clearBtn.style.display = 'flex';
         break;
 
       case "result":
         actionBtn.innerHTML = "<b>Return</b>";
         actionBtn.disabled = false;
         actionBtn.classList.add('tuneye-stage-result');
+        if (clearBtn) clearBtn.style.display = 'none';
         break;
 
       default:
