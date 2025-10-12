@@ -5,3 +5,5 @@
 **/distilmbert.zip
 **/distilmbert/
 **/model.zip
+**/.DS_Store
+**/__pycache__/
