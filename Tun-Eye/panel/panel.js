@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   console.log("[panel.js] Initializing...");
@@ -134,10 +134,10 @@
     const textInput = $('#tuneye-text-input');
     const imageDisplay = $('#tuneye-image-display');
 
-if (!textInput || !imageDisplay) {
-  log("Rebuilding main content structure...");
-  if (mainContent) {
-    mainContent.innerHTML = `
+    if (!textInput || !imageDisplay) {
+      log("Rebuilding main content structure...");
+      if (mainContent) {
+        mainContent.innerHTML = `
         <textarea 
             id="tuneye-text-input" 
             class="tuneye-text-input" 
@@ -154,7 +154,7 @@ if (!textInput || !imageDisplay) {
         ></textarea>
       <div id="tuneye-image-display" class="tuneye-image-display tuneye-hidden"></div>
     `;
-        
+
         const newTextInput = $('#tuneye-text-input');
         if (newTextInput) {
           newTextInput.addEventListener('input', () => {
@@ -211,19 +211,19 @@ if (!textInput || !imageDisplay) {
 
       if (enableTestModeCheckbox) enableTestModeCheckbox.checked = res.enableTestMode === true;
       if (enableRecordCheckbox) enableRecordCheckbox.checked = res.enableRecord === true;
-      
+
       const enableInstruction = res.enableInstructionOnStartup ?? true;
       if (enableInstructionCheckbox) enableInstructionCheckbox.checked = res.enableInstructionOnStartup = enableInstruction;
 
-          // --- Show instruction/help panel on startup if enabled ---
-        if (res.enableInstructionOnStartup === true) {
+      // --- Show instruction/help panel on startup if enabled ---
+      if (res.enableInstructionOnStartup === true) {
         log("Instruction on startup is enabled — showing help panel first");
         showSection('tuneye-help-panel');
         setActiveHeader('help');
-        } else {
+      } else {
         log("Instruction on startup disabled — showing main panel");
         showSection('tuneye-main-interface');
-        }
+      }
 
     });
 
@@ -254,7 +254,7 @@ if (!textInput || !imageDisplay) {
         if (changes.type || changes.value) {
           const newType = changes.type?.newValue;
           const newValue = changes.value?.newValue;
-          
+
           if (newType && newValue) {
             displayContent(newType, newValue);
           }
@@ -293,7 +293,7 @@ if (!textInput || !imageDisplay) {
 
       dragHandle.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
-        
+
         isDragging = true;
         panelContainer.classList.add('grabbing');
 
@@ -358,7 +358,7 @@ if (!textInput || !imageDisplay) {
         if (container) {
           // Check if panel was dragged (has custom position)
           const wasDragged = container.style.left !== '';
-          
+
           if (wasDragged) {
             // If dragged, just hide it without animation (fade out)
             container.style.opacity = '0';
@@ -369,14 +369,15 @@ if (!textInput || !imageDisplay) {
             // If not dragged, use normal CSS slide animation
             container.classList.remove('tuneye-visible');
           }
-          
+
           // Notify contentScript that panel is closed
-          window.postMessage({ 
+          window.postMessage({
             type: 'TUNEYE_PANEL_CLOSED',
-            source: 'tuneye-panel' 
+            source: 'tuneye-panel'
           }, '*');
-          
+
           log("Panel closed");
+          clearContent();
         }
       });
     }
@@ -388,7 +389,7 @@ if (!textInput || !imageDisplay) {
         log("Settings button clicked");
         const settingsPanel = document.getElementById('tuneye-settings-panel');
         const isHidden = settingsPanel?.classList.contains('tuneye-hidden');
-        
+
         if (isHidden) {
           showSection('tuneye-settings-panel');
           setActiveHeader('settings');
@@ -406,7 +407,7 @@ if (!textInput || !imageDisplay) {
         log("Help button clicked");
         const helpPanel = document.getElementById('tuneye-help-panel');
         const isHidden = helpPanel?.classList.contains('tuneye-hidden');
-        
+
         if (isHidden) {
           showSection('tuneye-help-panel');
           setActiveHeader('help');
@@ -422,12 +423,12 @@ if (!textInput || !imageDisplay) {
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
         log("Clear button clicked");
-        
+
         // Clear storage
         storage.local.remove(['type', 'value'], () => {
           log("Cleared content from storage");
         });
-        
+
         // Reset content and stage
         clearContent();
       });
@@ -451,18 +452,18 @@ if (!textInput || !imageDisplay) {
 
     // Helper: highlight the active icon
     function setActiveHeader(buttonName) {
-    const settingsBtn = $('.tuneye-settings');
-    const helpBtn = $('.tuneye-help');
+      const settingsBtn = $('.tuneye-settings');
+      const helpBtn = $('.tuneye-help');
 
-    [settingsBtn, helpBtn].forEach(btn => {
+      [settingsBtn, helpBtn].forEach(btn => {
         if (btn) btn.style.backgroundColor = 'transparent';
-    });
+      });
 
-    if (buttonName === 'settings' && settingsBtn) {
+      if (buttonName === 'settings' && settingsBtn) {
         settingsBtn.style.backgroundColor = 'var(--tuneye-purple)';
-    } else if (buttonName === 'help' && helpBtn) {
+      } else if (buttonName === 'help' && helpBtn) {
         helpBtn.style.backgroundColor = 'var(--tuneye-purple)';
-    }
+      }
     }
 
 
@@ -511,7 +512,7 @@ if (!textInput || !imageDisplay) {
             // Check if test mode is enabled
             if (settings.enableTestMode === true) {
               log("🧪 TEST MODE: Using fake data");
-              
+
               // Simulate API delay
               await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -584,10 +585,10 @@ if (!textInput || !imageDisplay) {
           } catch (err) {
             log("Error during detection:", err);
             console.error("Error encountered:\n------------------------------\n", err);
-            
+
             // Return to preview stage on error
             setStage('preview');
-            
+
             // Show error to user
             const mainContent = $('.tuneye-popup-main');
             if (mainContent) {
@@ -598,12 +599,12 @@ if (!textInput || !imageDisplay) {
         } else if (currentStage === 'result') {
           // Return to select stage
           log("Returning to select stage");
-          
+
           // Clear stored content
           storage.local.remove(['type', 'value'], () => {
             log("Cleared content from storage");
           });
-          
+
           clearContent();
         }
       });
@@ -650,17 +651,17 @@ if (!textInput || !imageDisplay) {
     if (typeof Chart === 'undefined') {
       log("Loading Chart.js...");
       const script = document.createElement('script');
-    // script.src = chrome.runtime.getURL('chart.js');  
+      // script.src = chrome.runtime.getURL('chart.js');  
       script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js";
       script.onload = () => {
         log("Chart.js loaded");
         renderChart(words, verdict);
       };
       script.onerror = () => {
-      log("X Failed to load Chart.js!");
+        log("X Failed to load Chart.js!");
       };
       document.head.appendChild(script);
-    } 
+    }
     else {
       log("✓ Chart.js already loaded");
       renderChart(words, verdict);
@@ -680,14 +681,14 @@ if (!textInput || !imageDisplay) {
         return;
       }
 
-    log("✓ Canvas found, checking Chart.js...");
-      
-    if (typeof Chart === 'undefined') {
+      log("✓ Canvas found, checking Chart.js...");
+
+      if (typeof Chart === 'undefined') {
         log("X Chart.js still not loaded!");
         return;
-    }
+      }
 
-    log("✓ Chart.js loaded, creating chart...");
+      log("✓ Chart.js loaded, creating chart...");
 
       try {
         if (window.tuneyeChartInstance) {
@@ -719,7 +720,7 @@ if (!textInput || !imageDisplay) {
                   drawBorder: false,
                 },
                 ticks: {
-                    display: false,
+                  display: false,
                 },
               },
               y: {
@@ -764,7 +765,7 @@ if (!textInput || !imageDisplay) {
             },
           },
         });
-        
+
         log("✅ Chart created successfully!");
         // add zoom controls
         addChartControls();
@@ -862,7 +863,7 @@ if (!textInput || !imageDisplay) {
       if (zoomInBtn) {
         zoomInBtn.addEventListener('click', () => {
           if (window.tuneyeChartInstance && zoomLevel < maxZoom) {
-            zoomLevel += 0.2;
+            zoomLevel += 250;
             window.tuneyeChartInstance.options.scales.x.min = -1 / zoomLevel;
             window.tuneyeChartInstance.options.scales.x.max = 1 / zoomLevel;
             window.tuneyeChartInstance.update('none');
@@ -876,7 +877,7 @@ if (!textInput || !imageDisplay) {
       if (zoomOutBtn) {
         zoomOutBtn.addEventListener('click', () => {
           if (window.tuneyeChartInstance && zoomLevel > minZoom) {
-            zoomLevel -= 0.2;
+            zoomLevel -= 250;
             window.tuneyeChartInstance.options.scales.x.min = -1 / zoomLevel;
             window.tuneyeChartInstance.options.scales.x.max = 1 / zoomLevel;
             window.tuneyeChartInstance.update('none');
