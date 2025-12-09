@@ -7,7 +7,8 @@ import cv2
 import json
 from joblib import load
 import torch
-from lime.lime_text import LimeTextExplainer
+from eli5.lime import TextExplainer
+from sklearn.feature_extraction.text import CountVectorizer
 
 app = Flask(__name__)
 CORS(app)
@@ -17,14 +18,11 @@ loaded_model = load('./adaboost_rf_model.joblib')
 loaded_tokenizer = load("./tfidf_vectorizer.joblib")
 class_names = ["Fake News", "Real News"]
 
-# Wrap the model in a prediction function for LIME
+# Wrap the model in a prediction function for LIME/ELI5
 def predict_proba(texts):
     X = loaded_tokenizer.transform(texts)        # Convert text to TF-IDF features
     probs = loaded_model.predict_proba(X)        # Get probabilities
     return probs
-
-# Create a LIME text explainer
-explainer = LimeTextExplainer(class_names=class_names)
 
 # Flask endpoint for frontend
 @app.route("/api/process", methods=["POST"])
@@ -53,17 +51,28 @@ def process_image(img_url):
     texts = [text for _, text, _ in results]
     joined_text = " ".join(texts)
     
-    # Call the distilmbert function to return the results
+    # Call the process_text function to return the results
     return process_text(joined_text)
     
 # Data processing if text
 def process_text(text_input):
-    exp = explainer.explain_instance(
-        text_input,        # the input text
-        predict_proba,     # function that returns probability
-        num_features=5,    # how many words to highlight
-        num_samples=300    # number of perturbations
+    # Create a vectorizer with ngram_range (1,3) for unigrams to trigrams
+    vectorizer = CountVectorizer(
+        ngram_range=(1, 3),  # Capture 1-word, 2-word, and 3-word phrases
+        lowercase=True,
+        max_features=5000    # Limit features to avoid memory issues
     )
+    
+    # Use ELI5's TextExplainer with the custom vectorizer
+    te = TextExplainer(
+        random_state=42,
+        n_samples=300,
+        char_based=False,
+        vec=vectorizer  # Use custom vectorizer for ngrams
+    )
+    
+    # Fit the explainer
+    te.fit(text_input, predict_proba)
     
     results = {
         "verdict": "",
@@ -85,9 +94,48 @@ def process_text(text_input):
     predicted_label = class_names[max_index]
     results["verdict"] = predicted_label
 
-    # features and their weights
-    for feature, weight in exp.as_list():
-        results["words"].append({"word": feature, "weight": f"{weight:.4f}"})
+    # Get explanation and extract features
+    explanation = te.explain_prediction(target_names=class_names)
+    
+    # Extract feature weights for the predicted class
+    try:
+        if hasattr(explanation, 'targets') and explanation.targets:
+            target_explanation = explanation.targets[0]
+            
+            # Get feature weights - handle different possible structures
+            if hasattr(target_explanation, 'feature_weights'):
+                fw = target_explanation.feature_weights
+                
+                # If it's a FeatureWeights object, extract pos and neg
+                if hasattr(fw, 'pos') and hasattr(fw, 'neg'):
+                    all_features = []
+                    
+                    # Add positive features
+                    for item in fw.pos:
+                        if hasattr(item, 'feature') and hasattr(item, 'weight'):
+                            all_features.append((item.feature, item.weight))
+                    
+                    # Add negative features
+                    for item in fw.neg:
+                        if hasattr(item, 'feature') and hasattr(item, 'weight'):
+                            all_features.append((item.feature, item.weight))
+                    
+                    # Sort by absolute weight
+                    sorted_features = sorted(
+                        all_features, 
+                        key=lambda x: abs(x[1]), 
+                        reverse=True
+                    )[:10]  # Get top 10 features
+                    
+                    for feature, weight in sorted_features:
+                        results["words"].append({
+                            "word": feature, 
+                            "weight": f"{weight:.4f}"
+                        })
+    except Exception as e:
+        print(f"Error extracting features: {e}")
+        # Fallback: if ELI5 fails, return empty phrases
+        results["words"] = []
     
     print(json.dumps(results, indent=4))
     
