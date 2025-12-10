@@ -149,6 +149,5 @@ def process_text(text_input):
 
 if __name__ == '__main__':
     app.run(
-        port=1234,
-        debug=True
+        port=1234
     )
