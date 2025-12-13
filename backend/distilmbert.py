@@ -5,6 +5,7 @@ import easyocr
 import numpy as np
 import cv2
 import json
+import re
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification
@@ -12,6 +13,7 @@ from transformers import (
 import torch
 from eli5.lime import TextExplainer
 from sklearn.feature_extraction.text import CountVectorizer
+from stopwordsiso import stopwords
 
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +23,29 @@ loaded_model = AutoModelForSequenceClassification.from_pretrained("./distilmbert
 loaded_tokenizer = AutoTokenizer.from_pretrained("./distilmbert")
 loaded_model.eval()
 class_names = ["Fake News", "Real News"]
+
+# Prepare stopwords
+english_stopwords = stopwords("en")
+filipino_stopwords = stopwords("tl")
+combined_stopwords = english_stopwords.union(filipino_stopwords)
+
+# Normalize stopwords to match tokenization pattern
+def normalize_stopwords(stopwords_set):
+    token_pattern = re.compile(r"(?u)\b\w\w+\b")
+    return set([token for word in stopwords_set for token in token_pattern.findall(word.lower())])
+
+normalized_stopwords = normalize_stopwords(combined_stopwords)
+
+# Function to check if a feature contains only stopwords
+def is_stopword_feature(feature, stopwords_set):
+    """Check if a feature (word or phrase) consists only of stopwords or is a special token"""
+    # Filter out LIME special tokens
+    if feature in ['<BIAS>', '<UNK>', '<PAD>']:
+        return True
+    
+    tokens = feature.lower().split()
+    # If all tokens are stopwords, return True
+    return all(token in stopwords_set for token in tokens)
 
 # Wrap the model in a prediction function for LIME/ELI5
 def predict_proba(texts):
@@ -115,15 +140,17 @@ def process_text(text_input):
                 if hasattr(fw, 'pos') and hasattr(fw, 'neg'):
                     all_features = []
                     
-                    # Add positive features
+                    # Add positive features (filter stopwords)
                     for item in fw.pos:
                         if hasattr(item, 'feature') and hasattr(item, 'weight'):
-                            all_features.append((item.feature, item.weight))
+                            if not is_stopword_feature(item.feature, normalized_stopwords):
+                                all_features.append((item.feature, item.weight))
                     
-                    # Add negative features
+                    # Add negative features (filter stopwords)
                     for item in fw.neg:
                         if hasattr(item, 'feature') and hasattr(item, 'weight'):
-                            all_features.append((item.feature, item.weight))
+                            if not is_stopword_feature(item.feature, normalized_stopwords):
+                                all_features.append((item.feature, item.weight))
                     
                     # Sort by absolute weight
                     sorted_features = sorted(
